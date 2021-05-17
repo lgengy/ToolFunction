@@ -17,8 +17,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Xml;
 using ToolFunction.Common;
 using ToolFunction.Utils;
 
@@ -64,7 +66,63 @@ public class Utils
     }
     #endregion
 
-    #region 文件相关
+    #region 文件（夹）相关
+
+    /// <summary>
+    /// 读XML文件
+    /// </summary>
+    /// <param name="XMLNodeName">节点路径</param>
+    /// <param name="XMLElementName">节点名</param>
+    /// <param name="DefaultValue">出现异常时的默认返回值</param>
+    /// <param name="XMLFileName">xml文件名</param>
+    /// <returns></returns>
+    public static string ReadXMLString(string XMLNodeName, string XMLElementName, string DefaultValue, string XMLFileName)
+    {
+        try
+        {
+            XmlDocument XMLData = new XmlDocument();
+            XMLData.LoadXml(XMLFileName);
+
+            XmlNode xnUser = XMLData.SelectSingleNode(XMLNodeName);
+            string strValue = DefaultValue;
+            if (xnUser[XMLElementName] != null)
+            {
+                strValue = xnUser[XMLElementName].InnerText;
+            }
+            return strValue;
+        }
+        catch (Exception)
+        {
+            return DefaultValue;
+        }
+    }
+
+    /// <summary>
+    /// 写XML文件
+    /// </summary>
+    /// <param name="XMLNodeName">完整结点路径</param>
+    /// <param name="value">要写入的值</param>
+    /// <param name="XMLFileName">xml文件名</param>
+    /// <returns></returns>
+    public static void WriteXMLString(string XMLNodeName, string value, string XMLFileName)
+    {
+        try
+        {
+            XmlDocument XMLData = new XmlDocument();
+            XMLData.Load(XMLFileName);
+
+            XmlNode xnUser = XMLData.SelectSingleNode(XMLNodeName);
+            if (xnUser != null)
+            {
+                xnUser.InnerText = value.ToString();
+                XMLData.Save(XMLFileName);
+            }
+        }
+        catch (Exception ex)
+        {
+            GlobalData.logger.WriteErrorInfor("WriteXMLString:" + ex.Message);
+        }
+    }
 
     /// <summary>
     /// 获取路径下的所有文件
@@ -355,6 +413,36 @@ public class Utils
     }
     #endregion
 
+    #region 类型转换
+    /// <summary>
+    /// image转byte数组
+    /// </summary>
+    /// <param name="image"></param>
+    /// <returns></returns>
+    public static byte[] ChangeImageToByteArray(Image image)
+    {
+        try
+        {
+            Bitmap bm = new Bitmap(image);
+            MemoryStream ms = new MemoryStream();
+            bm.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+            byte[] arr = new byte[ms.Length];
+            ms.Position = 0;
+            ms.Read(arr, 0, (int)ms.Length);
+            ms.Close();
+            bm.Dispose();
+
+            return arr;
+        }
+        catch (Exception ex)
+        {
+            GlobalData.logger.WriteTraceInfor("exception: Fail to change image to byte array! " + ex.Message);
+            GlobalData.logger.WriteErrorInfor("ChangeImageToByteArray: " + ex.StackTrace);
+            return null;
+        }
+    }
+    #endregion
+
     #region 其它
     /// <summary>
     /// 延时
@@ -368,6 +456,24 @@ public class Utils
             Application.DoEvents();
             Interval = DateTime.Now - StartTime;
         } while (Interval.TotalMilliseconds < IntervalbyMilliseconds);
+    }
+
+    /// <summary>
+    /// 生成指定长度随机数
+    /// </summary>
+    /// <param name="iLength"></param>
+    /// <returns></returns>
+    public static string GetRandomString(int iLength)
+    {
+        string buffer = "0123456789";// 随机字符中也可以为汉字（任何）
+        StringBuilder sb = new StringBuilder();
+        Random r = new Random();
+        int range = buffer.Length;
+        for (int i = 0; i < iLength; i++)
+        {
+            sb.Append(buffer.Substring(r.Next(range), 1));
+        }
+        return sb.ToString();
     }
 
     private void EmptyFunftion()
