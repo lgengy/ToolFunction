@@ -201,7 +201,7 @@ public class Utils
     }
 
     /// <summary>
-    /// 目录中是否文件
+    /// 目录中是否有文件
     /// </summary>
     /// <param name="dir">目录</param>
     /// <param name="searchPattern">匹配模式，默认为空</param>
@@ -212,6 +212,36 @@ public class Utils
             return Directory.GetFiles(dir).Length > 0;
         else
             return Directory.GetFiles(dir, searchPattern).Length > 0;
+    }
+
+    /// <summary>
+    /// 删除路径下的所有文件
+    /// </summary>
+    /// <param name="path">多个路径以逗号“,”进行区分</param>
+    public static void DeleteAllFilesFromPath(string paths)
+    {
+        GlobalData.logger.WriteTraceInfor(">DeleteAllFilesFromPath");
+
+        string[] pathArray = paths.Split(',');
+
+        foreach (string path in pathArray)
+        {
+            try
+            {
+                if (Directory.Exists(path))//目录存在
+                {
+                    Directory.Delete(path, true);
+                    GlobalData.logger.WriteTraceInfor("路径: " + path + "已删除");
+                }
+            }
+            catch (Exception ex)
+            {
+                GlobalData.logger.WriteTraceInfor("exception: " + ex.Message);
+                GlobalData.logger.WriteErrorInfor("DeleteAllFilesFromPath: " + ex.StackTrace);
+            }
+        }
+
+        GlobalData.logger.WriteTraceInfor("<DeleteAllFilesFromPath");
     }
     #endregion
 
