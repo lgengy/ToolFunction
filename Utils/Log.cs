@@ -1,15 +1,12 @@
 ﻿using friInterfaceTraceRecord;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ToolFunction.Utils
 {
     class Log
     {
-        public static CInterfaceTraceRecord TraceRecord = new CInterfaceTraceRecord();
-        private static bool InitialTraceFlag = false;
+        private CInterfaceTraceRecord TraceRecord = new CInterfaceTraceRecord();
+        private bool InitialTraceFlag = false;
 
         public Log(string logPath)
         {
