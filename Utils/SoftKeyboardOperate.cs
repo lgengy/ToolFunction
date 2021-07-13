@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using ToolFunction.Common;
 
 namespace ToolFunction.Utils
@@ -116,6 +117,44 @@ namespace ToolFunction.Utils
             else
             {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// 查找页面上的所有textbox，并绑定click事件打开软键盘
+        /// </summary>
+        /// <param name="controls"></param>
+        public static void TextBoxTriggerKeyboard(Control.ControlCollection controls)
+        {
+            if (controls.Count > 0)
+            {
+                foreach (Control control in controls)
+                {
+                    if (control is TextBox)
+                    {
+                        TextBox txtBox = (TextBox)control;
+                        txtBox.Click += new EventHandler(TxtBox_Click);
+                    }
+                    else
+                    {
+                        TextBoxTriggerKeyboard(control.Controls);
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        /// <summary>
+        /// 界面所有输入框的点击事件，用于触发软键盘
+        /// </summary>
+        private static void TxtBox_Click(object sender, EventArgs e)
+        {
+            if (!KeyboardOpend())
+            {
+                OpenKeyBoardFun();
             }
         }
 
