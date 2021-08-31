@@ -1,5 +1,5 @@
 ﻿
-namespace ToolFunction
+namespace ProgrammeFrame
 {
     partial class MainForm
     {
