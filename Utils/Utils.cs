@@ -21,7 +21,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
-using ToolFunction.Common;
+using ProgrammeFrame.Common;
 using ToolFunction.Utils;
 
 public class Utils
@@ -42,7 +42,7 @@ public class Utils
             }
             else
             {
-                GlobalData.logger.WriteTraceInfor("No datas");
+                GlobalData.logger.Info("No datas");
             }
         }
         return returnValue;
@@ -120,7 +120,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.WriteErrorInfor("WriteXMLString:" + ex.Message);
+            GlobalData.logger.Error("WriteXMLString", ex);
         }
     }
 
@@ -131,7 +131,7 @@ public class Utils
     /// <returns>文件list</returns>
     public static List<string> GetFileFromPath(string path)
     {
-        GlobalData.logger.WriteTraceInfor(">GetFileFromPath[" + path + "]");
+        GlobalData.logger.Info(">GetFileFromPath[" + path + "]");
         List<string> re = null;
         try
         {
@@ -143,16 +143,16 @@ public class Utils
                 }
                 else
                 {
-                    GlobalData.logger.WriteTraceInfor("No path");
+                    GlobalData.logger.Info("No path");
                 }
             }
         }
         catch (Exception ex)
         {
-            GlobalData.logger.WriteTraceInfor("exception: " + ex.Message);
-            GlobalData.logger.WriteErrorInfor("GetFileFromPath: " + ex.StackTrace);
+            GlobalData.logger.Warn(ex.Message);
+            GlobalData.logger.Error("GetFileFromPath", ex);
         }
-        GlobalData.logger.WriteTraceInfor("<GetFileFromPath");
+        GlobalData.logger.Info("<GetFileFromPath");
         return re;
     }
 
@@ -165,7 +165,7 @@ public class Utils
     /// <remarks>C:\a\b\c\d\e.txt，0返回C:\a\b\c\d\，1返回C:\，以此类推</remarks>
     public static string GetDirectoryFromPath(string path, int level = 0)
     {
-        GlobalData.logger.WriteTraceInfor(">GetDirectoryFromPath");
+        GlobalData.logger.Info(">GetDirectoryFromPath");
         string returnDic = "";
         try
         {
@@ -183,10 +183,10 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.WriteTraceInfor("exception: " + ex.Message);
-            GlobalData.logger.WriteErrorInfor("GetDirectoryFromPath: " + ex.StackTrace);
+            GlobalData.logger.Warn(ex.Message);
+            GlobalData.logger.Error("GetDirectoryFromPath", ex);
         }
-        GlobalData.logger.WriteTraceInfor("<GetDirectoryFromPath[" + returnDic + "]");
+        GlobalData.logger.Info("<GetDirectoryFromPath[" + returnDic + "]");
         return returnDic;
     }
 
@@ -220,7 +220,7 @@ public class Utils
     /// <param name="path">多个路径以逗号“,”进行区分</param>
     public static void DeleteAllFilesFromPath(string paths)
     {
-        GlobalData.logger.WriteTraceInfor(">DeleteAllFilesFromPath");
+        GlobalData.logger.Info(">DeleteAllFilesFromPath");
 
         string[] pathArray = paths.Split(',');
 
@@ -231,17 +231,17 @@ public class Utils
                 if (Directory.Exists(path))//目录存在
                 {
                     Directory.Delete(path, true);
-                    GlobalData.logger.WriteTraceInfor("路径: " + path + "已删除");
+                    GlobalData.logger.Info("路径: " + path + "已删除");
                 }
             }
             catch (Exception ex)
             {
-                GlobalData.logger.WriteTraceInfor("exception: " + ex.Message);
-                GlobalData.logger.WriteErrorInfor("DeleteAllFilesFromPath: " + ex.StackTrace);
+                GlobalData.logger.Warn(ex.Message);
+                GlobalData.logger.Error("DeleteAllFilesFromPath", ex);
             }
         }
 
-        GlobalData.logger.WriteTraceInfor("<DeleteAllFilesFromPath");
+        GlobalData.logger.Info("<DeleteAllFilesFromPath");
     }
     #endregion
 
@@ -255,7 +255,7 @@ public class Utils
     /// <remarks>winform页面通过BeginInvoke调用此方法，可有效避免程序卡顿</remarks>
     private void DisplayPicture(object com, string type, string imgPath)
     {
-        GlobalData.logger.WriteTraceInfor(">DisplayPicture[" + type + " 显示：" + imgPath + "]");
+        GlobalData.logger.Info(">DisplayPicture[" + type + " 显示：" + imgPath + "]");
 
         if (!string.IsNullOrEmpty(imgPath))
         {
@@ -287,8 +287,8 @@ public class Utils
             }
             catch (Exception ex)
             {
-                GlobalData.logger.WriteTraceInfor("exception: " + ex.Message);
-                GlobalData.logger.WriteErrorInfor("DisplayPicture[exception]: " + ex.StackTrace);
+                GlobalData.logger.Warn(ex.Message);
+                GlobalData.logger.Error("DisplayPicture", ex);
             }
             finally
             {
@@ -297,7 +297,7 @@ public class Utils
             }
         }
 
-        GlobalData.logger.WriteTraceInfor("<DisplayPicture");
+        GlobalData.logger.Info("<DisplayPicture");
     }
 
     /// <summary>
@@ -394,14 +394,14 @@ public class Utils
             }
             else
             {
-                GlobalData.logger.WriteTraceInfor(">>>>>>>>ping" + ip + "失败，ping了" + pingCount + "次<<<<<<<<");
+                GlobalData.logger.Info(">>>>>>>>ping" + ip + "失败，ping了" + pingCount + "次<<<<<<<<");
 
                 return false;
             }
         }
         catch (Exception ex)
         {
-            GlobalData.logger.WriteErrorInfor("NetWorkStatusVerify[网络连接检测出现异常]：" + ex.Message);
+            GlobalData.logger.Error("NetWorkStatusVerify", ex);
             return false;
         }
     }
@@ -466,8 +466,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.WriteTraceInfor("exception: Fail to change image to byte array! " + ex.Message);
-            GlobalData.logger.WriteErrorInfor("ChangeImageToByteArray: " + ex.StackTrace);
+            GlobalData.logger.Error("ChangeImageToByteArray", ex);
             return null;
         }
     }
@@ -508,17 +507,17 @@ public class Utils
 
     private void EmptyFunftion()
     {
-        GlobalData.logger.WriteTraceInfor(">");
+        GlobalData.logger.Info(">");
         try
         {
 
         }
         catch (Exception ex)
         {
-            GlobalData.logger.WriteTraceInfor("exception: " + ex.Message);
-            GlobalData.logger.WriteErrorInfor(": " + ex.StackTrace);
+            GlobalData.logger.Warn(ex.Message);
+            GlobalData.logger.Error("", ex);
         }
-        GlobalData.logger.WriteTraceInfor("<");
+        GlobalData.logger.Info("<");
     }
     #endregion
 }

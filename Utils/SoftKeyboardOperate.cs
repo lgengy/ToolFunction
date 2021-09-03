@@ -14,7 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using ToolFunction.Common;
+using ProgrammeFrame.Common;
 
 namespace ToolFunction.Utils
 {
@@ -77,7 +77,7 @@ namespace ToolFunction.Utils
             }
             catch (Exception ex)
             {
-                GlobalData.logger.WriteErrorInfor("CloseKeyBoardFun: " + ex.Message);
+                GlobalData.logger.Error("CloseKeyBoardFun", ex);
             }
         }
 
@@ -96,7 +96,7 @@ namespace ToolFunction.Utils
             }
             catch (Exception ex)
             {
-                GlobalData.logger.WriteErrorInfor("CloseKeyBoardFun: " + ex.Message);
+                GlobalData.logger.Error("CloseKeyBoardFun", ex);
             }
         }
 

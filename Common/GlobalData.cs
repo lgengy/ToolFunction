@@ -7,13 +7,13 @@
 *********************************************************************************/
 
 using friUIMessageBox;
-using ToolFunction.Utils;
+using log4net;
 
-namespace ToolFunction.Common
+namespace ProgrammeFrame.Common
 {
     class GlobalData
     {
         public static CUIMessageBox messageBox = new CUIMessageBox();//提示框
-        public static Log logger = new Log("D:\\");//日志
+        public static readonly ILog logger = LogManager.GetLogger("ProgrammeFrame");
     }
 }
