@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using log4net.Config;
+using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace ProgrammeFrame
@@ -13,6 +13,8 @@ namespace ProgrammeFrame
         [STAThread]
         static void Main()
         {
+            XmlConfigurator.Configure(new FileInfo($"{Application.StartupPath}\\ProgrammeFrame.xml"));
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
