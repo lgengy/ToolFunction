@@ -344,6 +344,37 @@ public class Utils
                 }
         }
     }
+
+    /// <summary>
+    /// xml文件格式化
+    /// </summary>
+    /// <param name="xmlData"></param>
+    /// <returns></returns>
+    public static string XmlDataFormatted(string xmlData)
+    {
+        XmlDocument xml = new XmlDocument();
+        xml.LoadXml(xmlData);
+        try
+        {
+            StringBuilder builder = new StringBuilder();
+            using (StringWriter sw = new StringWriter(builder))
+            {
+                using (XmlTextWriter xtw = new XmlTextWriter(sw))
+                {
+                    xtw.Formatting = Formatting.Indented;
+                    xtw.Indentation = 1;
+                    xtw.IndentChar = '\t';
+                    xml.WriteTo(xtw);
+                }
+            }
+            return builder.ToString();
+        }
+        catch (Exception ex)
+        {
+            GlobalData.logger.Warn("XmlDataFormatted", ex);
+            return "";
+        }
+    }
     #endregion
 
     #region 合规性判断
@@ -373,6 +404,8 @@ public class Utils
     /// <summary>
     /// 网络状态检测
     /// </summary>
+    /// <param name="ip">连接IP</param>
+    /// <param name="checkCount">重连次数，每次间隔500毫秒</param>
     /// <returns>true-连接正常   false-无法连接</returns>
     public static bool NetWorkStatusVerify(string ip, int checkCount = 5)
     {
