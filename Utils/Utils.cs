@@ -67,9 +67,63 @@ public class Utils
     #endregion
 
     #region 文件（夹）相关
+    /// <summary>
+    /// 获取xml文件中NodeType为Text的所有节点信息
+    /// </summary>
+    /// <param name="xmlNodeList">xml node集合</param>
+    /// <param name="dic">保存节点信息的键值对(节点名，节点值)</param>
+    public static void GetAllXMLNode(XmlNodeList xmlNodeList, ref Dictionary<string, string> dic)
+    {
+        try
+        {
+            foreach (XmlNode node in xmlNodeList)
+            {
+                if (!node.HasChildNodes && node.NodeType == XmlNodeType.Text)
+                {
+                    dic.Add(node.ParentNode.Name, node.InnerText);
+                }
+                else
+                {
+                    GetAllXMLNode(node.ChildNodes, ref dic);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            GlobalData.logger.Warn("GetAllXMLNode\r\n", ex);
+        }
+    }
 
     /// <summary>
-    /// 读XML文件
+    /// 读取txt文件
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public static StringBuilder ReadTXT(string path)
+    {
+        StringBuilder sb = new StringBuilder();
+        StreamReader sr = new StreamReader(path, Encoding.Default);
+        try
+        {
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                sb.Append(line);
+            }
+        }
+        catch (Exception ex)
+        {
+            GlobalData.logger.Error("ReadTXT", ex);
+        }
+        finally
+        {
+            sr.Close();
+        }
+        return sb;
+    }
+
+    /// <summary>
+    /// 读XML文件的指定节点
     /// </summary>
     /// <param name="XMLNodeName">节点路径</param>
     /// <param name="XMLElementName">节点名</param>
@@ -98,7 +152,7 @@ public class Utils
     }
 
     /// <summary>
-    /// 写XML文件
+    /// 把值写入XML文件的指定节点
     /// </summary>
     /// <param name="XMLNodeName">完整结点路径</param>
     /// <param name="value">要写入的值</param>

@@ -14,6 +14,7 @@ namespace ProgrammeFrame
         static void Main()
         {
             XmlConfigurator.Configure(new FileInfo($"{Application.StartupPath}\\ProgrammeFrame.xml"));
+            Entity.EntityConfig.ReadXMLFile($"{Application.StartupPath}\\ProgrammeFrame.xml");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

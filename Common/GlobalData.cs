@@ -8,6 +8,7 @@
 
 using friUIMessageBox;
 using log4net;
+using ProgrammeFrame.Entity;
 
 namespace ProgrammeFrame.Common
 {
@@ -15,5 +16,6 @@ namespace ProgrammeFrame.Common
     {
         public static CUIMessageBox messageBox = new CUIMessageBox();//提示框
         public static readonly ILog logger = LogManager.GetLogger("ProgrammeFrame");
+        public static EntityConfig config = EntityConfig.GetConfig();
     }
 }
