@@ -520,7 +520,7 @@ public class Utils
         string ip = "";
         foreach (IPAddress el in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
         {
-            if (el.ToString().Contains(subNetWork))
+            if (!string.IsNullOrEmpty(subNetWork) && el.ToString().Contains(subNetWork))
             {
                 ip = el.ToString();
                 break;
