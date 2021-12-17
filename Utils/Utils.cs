@@ -36,7 +36,7 @@ public class Utils
         bool returnValue = false;
         if (ds != null)
         {
-            if (ds.Tables[0].Rows.Count > 0)
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 returnValue = true;
             }
@@ -528,6 +528,39 @@ public class Utils
         }
         return ip;
     }
+
+    /// <summary>
+    /// 重复获取指定次数的与指定网段相匹配的第一个IP直到成功
+    /// </summary>
+    /// <param name="localSubNetwork">网段</param>
+    /// <param name="count">次数，默认10次</param>
+    private static string GetLocalIPMatchedSubNetwork(string localSubNetwork, int count = 10)
+    {
+        string localIP = "";
+
+        for (int i = 0; i < count; i++)
+        {
+            if (string.IsNullOrEmpty(localIP) && i == count - 1)
+            {
+                GlobalData.logger.Warn("本地IP获取失败");
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(localIP))
+                {
+                    GlobalData.logger.Info("本地IP：" + localIP);
+                    break;
+                }
+                else
+                {
+                    System.Threading.Thread.Sleep(2000);
+                    localIP = GetLocalIPMatchedSubNetwork(localSubNetwork);
+                }
+            }
+        }
+
+        return localIP;
+    }
     #endregion
 
     #region 类型转换
@@ -602,9 +635,12 @@ public class Utils
         catch (Exception ex)
         {
             GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error("", ex);
+            GlobalData.logger.Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
         }
         GlobalData.logger.Info("<");
     }
+    #endregion
+
+    #region 待转正
     #endregion
 }
