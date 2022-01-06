@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -52,16 +53,16 @@ public class Utils
     /// 判断datarow的列元素是否为null或空
     /// </summary>
     /// <param name="el">DataRow row["CloumnName"]</param>
-    /// <returns>true-有数据 false-没数据</returns>
-    public static bool CheckRowElement(object el)
+    /// <returns>true-没数据 false-有数据</returns>
+    public static bool CheckRowElementIsNullOrEmpty(object el)
     {
         if (el != DBNull.Value && !string.IsNullOrEmpty(el.ToString()))
         {
-            return true;
+            return false;
         }
         else
         {
-            return false;
+            return true;
         }
     }
     #endregion
@@ -627,7 +628,7 @@ public class Utils
 
     private void EmptyFunftion()
     {
-        GlobalData.logger.Info(">");
+        GlobalData.logger.Info(">" + MethodBase.GetCurrentMethod().Name);
         try
         {
 
@@ -635,9 +636,9 @@ public class Utils
         catch (Exception ex)
         {
             GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+            GlobalData.logger.Error(MethodBase.GetCurrentMethod().Name, ex);
         }
-        GlobalData.logger.Info("<");
+        GlobalData.logger.Info("<" + MethodBase.GetCurrentMethod().Name);
     }
     #endregion
 
