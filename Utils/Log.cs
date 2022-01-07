@@ -16,7 +16,7 @@ using log4net.Layout;
 using log4net.Repository.Hierarchy;
 using System.Collections.Generic;
 
-namespace ProgrammeFrame.Utils
+namespace ProgrammeFrame
 {
     public class Log
     {

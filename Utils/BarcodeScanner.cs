@@ -2,16 +2,18 @@
 
 ** 类名称： BarcodeScanner
 
-** 描述：扫码枪全局获取扫到的条码。
-         SetWindowsHookEx 用于设置钩子。（设立一道卡子，盘查需要的信息）
-         CallNextHookEx 用于传递钩子（消息是重要的，所以从哪里来，就应该回到哪里去，除非你决定要封锁消息）
-         UnhookWindowsHookEx 卸载钩子（卸载很重要，卡子设多了会造成拥堵）
-         参见https://www.cnblogs.com/TBW-Superhero/p/8659306.html
+** 描  述：扫码枪全局获取扫到的条码。
+           SetWindowsHookEx 用于设置钩子。（设立一道卡子，盘查需要的信息）
+           CallNextHookEx 用于传递钩子（消息是重要的，所以从哪里来，就应该回到哪里去，除非你决定要封锁消息）
+           UnhookWindowsHookEx 卸载钩子（卸载很重要，卡子设多了会造成拥堵）
+           参见https://www.cnblogs.com/TBW-Superhero/p/8659306.html
 
-** 使用：1、创建此类全局对象 BarcodeScanner listener = new BarcodeScanner();
-         2、监听事件 listener.ScanerEvent += Listener_ScanerEvent;
-         3、启动程序监听 listener.Start();
-         4、程序运行结束时停止监听 listener.Stop();
+** 使  用：1、创建此类全局对象 BarcodeScanner listener = new BarcodeScanner();
+           2、监听事件 listener.ScanerEvent += Listener_ScanerEvent;
+           3、启动程序监听 listener.Start();
+           4、程序运行结束时停止监听 listener.Stop();
+
+** 备  注：效果很不好，注册表设置了lowlevelhooktimeout1000000也就撑了两小时，我一个函数就算执行再慢也不会慢到这种地步。
 
 *********************************************************************************/
 

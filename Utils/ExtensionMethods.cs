@@ -10,7 +10,7 @@ using System;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace ToolFunction.Utils
+namespace ProgrammeFrame
 {
     public static class ExtensionMethods
     {

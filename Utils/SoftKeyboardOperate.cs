@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ProgrammeFrame.Common;
 
-namespace ToolFunction.Utils
+namespace ProgrammeFrame
 {
     class SoftKeyboardOperate
     {

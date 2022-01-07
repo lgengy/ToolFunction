@@ -8,6 +8,8 @@
 *
 ********************************************************************/
 
+using ProgrammeFrame;
+using ProgrammeFrame.Common;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -22,8 +24,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
-using ProgrammeFrame.Common;
-using ToolFunction.Utils;
 
 public class Utils
 {

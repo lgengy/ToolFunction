@@ -82,6 +82,7 @@
     <Compile Include="Utils\Log.cs" />
     <Compile Include="Utils\PictureZoom.cs" />
     <Compile Include="Utils\SoftKeyboardOperate.cs" />
+    <Compile Include="Utils\SystemHotKey.cs" />
     <Compile Include="Utils\Utils.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
