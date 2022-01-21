@@ -1,6 +1,6 @@
 /********************************************************************
 *
-* 类  名：ToolFunction
+* 类  名：Utils
 *
 * 作  者：lgengy
 *
@@ -460,38 +460,43 @@ public class Utils
     /// 网络状态检测
     /// </summary>
     /// <param name="ip">连接IP</param>
-    /// <param name="checkCount">重连次数，每次间隔500毫秒</param>
+    /// <param name="checkCount">重连次数</param>
     /// <returns>true-连接正常   false-无法连接</returns>
     public static bool NetWorkStatusVerify(string ip, int checkCount = 5)
     {
-        int pingCount = 0;
-        IPStatus pingStatus = IPStatus.BadRoute;
-        try
+        bool re = false;
+        if (!ip.Equals(""))
         {
-            while (++pingCount != checkCount)
+            int pingCount = 0;
+            IPStatus pingStatus = IPStatus.BadRoute;
+            try
             {
-                Ping pingSender = new Ping();
-                PingReply reply = pingSender.Send(ip, 100);
-                pingStatus = reply.Status;
-                if (pingStatus == IPStatus.Success) break;
-            }
+                while (++pingCount != checkCount)
+                {
+                    Ping pingSender = new Ping();
+                    PingReply reply = pingSender.Send(ip, 100);
+                    pingStatus = reply.Status;
+                    if (pingStatus == IPStatus.Success) break;
+                }
 
-            if (pingStatus == IPStatus.Success)
-            {
-                return true;
+                if (pingStatus == IPStatus.Success)
+                {
+                    re = true;
+                }
+                else
+                {
+                    GlobalData.logger.Info(">>>>>>>>ping" + ip + "失败，ping了" + pingCount + "次<<<<<<<<");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                GlobalData.logger.Info(">>>>>>>>ping" + ip + "失败，ping了" + pingCount + "次<<<<<<<<");
-
-                return false;
+                GlobalData.logger.Error("NetWorkStatusVerify", ex);
             }
         }
-        catch (Exception ex)
-        {
-            GlobalData.logger.Error("NetWorkStatusVerify", ex);
-            return false;
-        }
+        else
+            GlobalData.logger.Error("要ping的IP为空");
+
+        return re;
     }
 
     /// <summary>
