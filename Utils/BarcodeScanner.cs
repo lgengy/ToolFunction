@@ -286,7 +286,7 @@ namespace ProgrammeFrame
                     {
                         if (chr == 'Z')
                         {
-                            string s = "";
+                            //string s = "";
                         }
                         chr = (char)((int)chr + 32);
                     }

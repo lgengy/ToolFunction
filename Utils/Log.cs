@@ -35,7 +35,7 @@ namespace ProgrammeFrame
         {
             if (type == 0 && listRollingFileAppender.Count == 0)
             {
-                listRollingFileAppender = CreateRollingFileAppender("Log", "LogErr", @"D:\Log\", "10MB", 50, true);
+                listRollingFileAppender = CreateRollingFileAppender("ProgrammeFrame", "ProgrammeFrameErr", @"D:\ProgrammeFrame\", "10MB", 50, true);
                 foreach (RollingFileAppender rollingFileAppender in listRollingFileAppender)
                 {
                     hierarchy.Root.AddAppender(rollingFileAppender);
@@ -116,7 +116,7 @@ namespace ProgrammeFrame
             logger.Level = Level.Debug;
             logger.Additivity = additivity;
 
-            //var x = hierarchy.GetCurrentLoggers();//测试用
+            var x = hierarchy.GetCurrentLoggers();//测试用
 
             return LogManager.GetLogger(name);
         }
