@@ -1,11 +1,13 @@
 ﻿/********************************************************************************
-
-** 类名称： SystemHotKey
-
-** 描  述： 系统热键注册类。参见网络。
-
-** 用  例： protected override void WndProc(ref Message msg)
-            {
+*
+* 类  名：SystemHotKey
+*
+* 描  述：系统热键注册类
+*
+* 参  见：网络
+*
+* 用  例：protected override void WndProc(ref Message msg)
+           {
                 try
                 {
                     base.WndProc(ref msg);
@@ -33,7 +35,7 @@
                 {
                     GlobalData.logger.Error("WndProc", ex);
                 }
-            }
+           }
 
 *********************************************************************************/
 

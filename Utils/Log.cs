@@ -4,8 +4,9 @@
 *
 * 作  者：lgengy
 *
-* 描  述：通过编程的方式实现log4net配置。GetLogger方法实现参见
-*         https://stackoverflow.com/questions/52912682/cant-configure-log4net-logger-programmatically
+* 描  述：log4net可编程配置
+* 
+* 参  见：GetLogger方法实现移步https://stackoverflow.com/questions/52912682/cant-configure-log4net-logger-programmatically
 *
 ********************************************************************/
 

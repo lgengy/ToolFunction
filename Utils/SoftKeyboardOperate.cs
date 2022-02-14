@@ -2,9 +2,9 @@
 *
 * 类  名：SoftKeyboardOperate
 *
-* 描  述：软键盘操作类。
+* 描  述：软键盘操作
 * 
-* 参  考：https://blog.csdn.net/u011267225/article/details/113555866
+* 参  见：https://blog.csdn.net/u011267225/article/details/113555866
 *
 ********************************************************************/
 

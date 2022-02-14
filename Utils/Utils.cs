@@ -246,7 +246,7 @@ public class Utils
     }
 
     /// <summary>
-    /// 从完整路径中获取文件名
+    /// 从完整路径中获取最后一个"\"之后的文件名(没有文件的话就是目录名)
     /// </summary>
     public static string FindFileNameInPath(string pathName)
     {
@@ -328,8 +328,8 @@ public class Utils
                     switch (type)
                     {
                         case "picturebox":
-                            PictureZoom.LoadImg(com as PictureBox, bmp);//使图片可缩放
-                            //(com as PictureBox).Image = bmp;
+                            //PictureZoom.LoadImg(com as PictureBox, bmp);//使图片可缩放
+                            (com as PictureBox).Image = bmp;
                             break;
                         case "button":
                             (com as Button).BackgroundImage = bmp;

@@ -1,4 +1,14 @@
-﻿using System;
+﻿/********************************************************************
+*
+* 类  名：PictureZoom
+*
+* 作  者：lgengy
+*
+* 描  述：picturebox显示的图片可缩放
+*
+********************************************************************/
+
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 

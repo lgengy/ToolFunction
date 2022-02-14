@@ -15,8 +15,8 @@ namespace ProgrammeFrame.Common
     class GlobalData
     {
         public static CUIMessageBox messageBox = new CUIMessageBox();//提示框
-        //public static readonly ILog logger = LogManager.GetLogger("ProgrammeFrame");
-        public static readonly ILog logger = new Log(1).GetLogger("ProgrammeFrame", true,true, "ProgrammeFrame", "ProgrammeFrameErr");
+        public static readonly ILog logger = LogManager.GetLogger("ProgrammeFrame");
+        //public static readonly ILog logger = new Log(1).GetLogger("ProgrammeFrame", true,true, "ProgrammeFrame", "ProgrammeFrameErr");
         public static EntityConfig config = EntityConfig.GetConfig();
     }
 }
