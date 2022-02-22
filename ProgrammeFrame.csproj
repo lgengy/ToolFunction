@@ -50,6 +50,9 @@
     <Reference Include="friUIMsb">
       <HintPath>bin\DLL\friUIMsb.dll</HintPath>
     </Reference>
+    <Reference Include="FSI201">
+      <HintPath>bin\DLL\FSI201.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\DLL\log4net.dll</HintPath>
@@ -68,6 +71,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\db\IQueryControl.cs" />
+    <Compile Include="Common\db\QueryControlImplement.cs" />
+    <Compile Include="Common\db\SQLOperation.cs" />
     <Compile Include="Common\GlobalData.cs" />
     <Compile Include="Entity\EntityConfig.cs" />
     <Compile Include="MainForm.cs">

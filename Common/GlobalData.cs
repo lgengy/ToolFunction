@@ -18,5 +18,6 @@ namespace ProgrammeFrame.Common
         public static readonly ILog logger = LogManager.GetLogger("ProgrammeFrame");
         //public static readonly ILog logger = new Log(1).GetLogger("ProgrammeFrame", true,true, "ProgrammeFrame", "ProgrammeFrameErr");
         public static EntityConfig config = EntityConfig.GetConfig();
+        public static db.QueryControlImplement myQueryControl = new db.QueryControlImplement();
     }
 }

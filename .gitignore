@@ -1,6 +1,7 @@
 bin/
 obj/
 .vs/
+Common/db/
 
 *.user
 *.sln

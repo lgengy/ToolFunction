@@ -17,8 +17,15 @@ namespace ProgrammeFrame.Entity
     public class EntityConfig
     {
         private static XmlDocument _XmlDocument = null;
+        private string _ServerIP;
+        private string _DBName;
+        private string _LogPath;
 
         #region getter and setter
+
+        public string ServerIP { get => _ServerIP; set => _ServerIP = value; }
+        public string DBName { get => _DBName; set => _DBName = value; }
+        public string LogPath { get => _LogPath; set => _LogPath = value; }
         #endregion
 
         /// <summary>
