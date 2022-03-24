@@ -2,7 +2,7 @@
 <configuration>
 	<log4net>
 		<appender name="ProgrammeFrameLog" type="log4net.Appender.RollingFileAppender" >
-			<file value="D:\Fiscan\Log\ProgrammeFrame.log" />
+			<file value="D:\Log\ProgrammeFrame.log" />
 			<appendToFile value="true" />
 			<PreserveLogFileNameExtension value="true" />
 			<maximumFileSize value="2MB" />
@@ -16,7 +16,7 @@
 			</filter>
 		</appender>
 		<appender name="ProgrammeFrameErrorLog" type="log4net.Appender.RollingFileAppender" >
-			<file value="D:\Fiscan\Log\ProgrammeFrameError.log" />
+			<file value="D:\Log\ProgrammeFrameError.log" />
 			<appendToFile value="true" />
 			<PreserveLogFileNameExtension value="true" />
 			<maximumFileSize value="2MB" />

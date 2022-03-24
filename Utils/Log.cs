@@ -36,7 +36,7 @@ namespace ProgrammeFrame
         {
             if (type == 0 && listRollingFileAppender.Count == 0)
             {
-                listRollingFileAppender = CreateRollingFileAppender("ProgrammeFrame", "ProgrammeFrameErr", @"D:\ProgrammeFrame\", "10MB", 50, true);
+                listRollingFileAppender = CreateRollingFileAppender("ProgrammeFrame", "ProgrammeFrameErr", @"D:\Log\ProgrammeFrame\", "10MB", 50, true);
                 foreach (RollingFileAppender rollingFileAppender in listRollingFileAppender)
                 {
                     hierarchy.Root.AddAppender(rollingFileAppender);

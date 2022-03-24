@@ -18,7 +18,7 @@ using ProgrammeFrame.Common;
 
 namespace ProgrammeFrame
 {
-    class SoftKeyboardOperate
+    public class SoftKeyboardOperate
     {
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool Wow64DisableWow64FsRedirection(ref IntPtr ptr);

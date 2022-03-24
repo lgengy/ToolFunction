@@ -187,18 +187,15 @@ public class Utils
     public static List<string> GetFileFromPath(string path)
     {
         GlobalData.logger.Info(">GetFileFromPath[" + path + "]");
-        List<string> re = null;
+        List<string> re = new List<string>();
         try
         {
-            if (!string.IsNullOrWhiteSpace(path))//字段存在
+            if (!string.IsNullOrWhiteSpace(path))
             {
-                if (Directory.Exists(path))//目录存在
+                foreach (string p in Directory.GetFileSystemEntries(path))
                 {
-                    re = Directory.GetFiles(path).ToList();
-                }
-                else
-                {
-                    GlobalData.logger.Info("No path");
+                    if (Directory.Exists(p)) re.AddRange(GetFileFromPath(p));
+                    else re.Add(p);
                 }
             }
         }
