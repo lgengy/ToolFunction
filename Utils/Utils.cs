@@ -91,7 +91,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Warn("GetAllXMLNode\r\n", ex);
+            GlobalData.logger.Error("", ex);
         }
     }
 
@@ -114,7 +114,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error("ReadTXT", ex);
+            GlobalData.logger.Error("", ex);
         }
         finally
         {
@@ -175,7 +175,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error("WriteXMLString", ex);
+            GlobalData.logger.Error("", ex);
         }
     }
 
@@ -186,7 +186,7 @@ public class Utils
     /// <returns>文件list</returns>
     public static List<string> GetFileFromPath(string path)
     {
-        GlobalData.logger.Info(">GetFileFromPath[" + path + "]");
+        GlobalData.logger.Info("> param: " + path);
         List<string> re = new List<string>();
         try
         {
@@ -202,9 +202,9 @@ public class Utils
         catch (Exception ex)
         {
             GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error("GetFileFromPath", ex);
+            GlobalData.logger.Error("", ex);
         }
-        GlobalData.logger.Info("<GetFileFromPath");
+        GlobalData.logger.Info("< result: " + re.Count);
         return re;
     }
 
@@ -217,39 +217,44 @@ public class Utils
     /// <remarks>C:\a\b\c\d\e.txt，0返回C:\a\b\c\d\，1返回C:\，以此类推</remarks>
     public static string GetDirectoryFromPath(string path, int level = 0)
     {
-        GlobalData.logger.Info(">GetDirectoryFromPath");
-        string returnDic = "";
+        GlobalData.logger.Info($"> params: {path}, {level}");
+        string returnDir = "";
         try
         {
             List<string> dic = path.Split('\\').ToList<string>();
             if (level == 0 || level >= (dic.Count - 1))//如果所要级别为0或大于等于当前路径中目录级别
             {
                 dic.RemoveAt(dic.Count - 1);
-                returnDic = string.Join("\\", dic.ToArray());
+                returnDir = string.Join("\\", dic.ToArray());
             }
             if (level < (dic.Count - 1) && level > 0)
             {
                 dic.RemoveRange(level, dic.Count - level);
-                returnDic = string.Join("\\", dic.ToArray());
+                returnDir = string.Join("\\", dic.ToArray());
             }
         }
         catch (Exception ex)
         {
             GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error("GetDirectoryFromPath", ex);
+            GlobalData.logger.Error("", ex);
         }
-        GlobalData.logger.Info("<GetDirectoryFromPath[" + returnDic + "]");
-        return returnDic;
+        GlobalData.logger.Info("< return value: " + returnDir);
+        return returnDir;
     }
 
     /// <summary>
     /// 从完整路径中获取最后一个"\"之后的文件名(没有文件的话就是目录名)
     /// </summary>
-    public static string FindFileNameInPath(string pathName)
+    /// <param name="pathName">路径</param>
+    /// <param name="keepSuffix">是否保留后缀，默认保留</param>
+    public static string FindFileNameInPath(string pathName, bool keepSuffix = true)
     {
         int lastBiasPosition = pathName.LastIndexOf(@"\");
 
-        return pathName.Substring(lastBiasPosition + 1, pathName.Length - lastBiasPosition - 1);
+        if (keepSuffix)
+            return pathName.Substring(lastBiasPosition + 1, pathName.Length - lastBiasPosition - 1);
+        else
+            return pathName.Substring(lastBiasPosition + 1, pathName.Length - lastBiasPosition - 1).Split('.')[0];
     }
 
     /// <summary>
@@ -272,7 +277,7 @@ public class Utils
     /// <param name="path">多个路径以逗号“,”进行区分</param>
     public static void DeleteAllFilesFromPath(string paths)
     {
-        GlobalData.logger.Info(">DeleteAllFilesFromPath");
+        GlobalData.logger.Info("> param: " + paths);
 
         string[] pathArray = paths.Split(',');
 
@@ -289,11 +294,11 @@ public class Utils
             catch (Exception ex)
             {
                 GlobalData.logger.Warn(ex.Message);
-                GlobalData.logger.Error("DeleteAllFilesFromPath", ex);
+                GlobalData.logger.Error("", ex);
             }
         }
 
-        GlobalData.logger.Info("<DeleteAllFilesFromPath");
+        GlobalData.logger.Info("<");
     }
     #endregion
 
@@ -305,13 +310,13 @@ public class Utils
     /// <param name="type">控件类型</param>
     /// <param name="imgPath">图片完整路径</param>
     /// <remarks>winform页面通过BeginInvoke调用此方法，可有效避免程序卡顿</remarks>
-    private void DisplayPicture(object com, string type, string imgPath)
+    private bool DisplayPicture(object com, string type, string imgPath)
     {
-        GlobalData.logger.Info(">DisplayPicture[" + type + " 显示：" + imgPath + "]");
+        GlobalData.logger.Info("> params: " + type + "," + imgPath);
+        bool result = false;
 
         if (!string.IsNullOrEmpty(imgPath))
         {
-
             Image img = null;
             Bitmap bmp = null;
 
@@ -335,12 +340,13 @@ public class Utils
                             (com as Label).Image = bmp;
                             break;
                     }
+                    result = true;
                 }
             }
             catch (Exception ex)
             {
                 GlobalData.logger.Warn(ex.Message);
-                GlobalData.logger.Error("DisplayPicture", ex);
+                GlobalData.logger.Error("", ex);
             }
             finally
             {
@@ -349,7 +355,8 @@ public class Utils
             }
         }
 
-        GlobalData.logger.Info("<DisplayPicture");
+        GlobalData.logger.Info("< result: " + result);
+        return result;
     }
 
     /// <summary>
@@ -423,7 +430,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Warn("XmlDataFormatted", ex);
+            GlobalData.logger.Error("", ex);
             return "";
         }
     }
@@ -487,7 +494,7 @@ public class Utils
             }
             catch (Exception ex)
             {
-                GlobalData.logger.Error("NetWorkStatusVerify", ex);
+                GlobalData.logger.Error("", ex);
             }
         }
         else
@@ -589,7 +596,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error("ChangeImageToByteArray", ex);
+            GlobalData.logger.Error("", ex);
             return null;
         }
     }
@@ -630,7 +637,7 @@ public class Utils
 
     private void EmptyFunftion()
     {
-        GlobalData.logger.Info(">" + MethodBase.GetCurrentMethod().Name);
+        GlobalData.logger.Info("> ");
         try
         {
 
@@ -638,9 +645,9 @@ public class Utils
         catch (Exception ex)
         {
             GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error(MethodBase.GetCurrentMethod().Name, ex);
+            GlobalData.logger.Error("", ex);
         }
-        GlobalData.logger.Info("<" + MethodBase.GetCurrentMethod().Name);
+        GlobalData.logger.Info("< ");
     }
     #endregion
 

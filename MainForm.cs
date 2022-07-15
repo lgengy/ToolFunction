@@ -42,17 +42,27 @@ namespace ProgrammeFrame
         /// <param name="expiredDays">日期</param>
         private void DeletingExpiredLogs(string logDir, int expiredDays)
         {
-            List<string> listLogFile = Utils.GetFileFromPath(logDir);
-            if (listLogFile.Count > 0)
-                foreach (string logPath in listLogFile)
-                {
-                    FileInfo file = new FileInfo(logPath);
-                    if ((DateTime.Now - file.LastWriteTime).TotalDays > expiredDays)
+            GlobalData.logger.Info("> ");
+            try
+            {
+                List<string> listLogFile = Utils.GetFileFromPath(logDir);
+                if (listLogFile.Count > 0)
+                    foreach (string logPath in listLogFile)
                     {
-                        file.Delete();
-                        GlobalData.logger.Info("Deleting log: " + file.Name);
+                        FileInfo file = new FileInfo(logPath);
+                        if ((DateTime.Now - file.LastWriteTime).TotalDays > expiredDays)
+                        {
+                            file.Delete();
+                            GlobalData.logger.Info("Deleting log: " + file.Name);
+                        }
                     }
-                }
+            }
+            catch (Exception ex)
+            {
+                GlobalData.logger.Warn(ex.Message);
+                GlobalData.logger.Error("", ex);
+            }
+            GlobalData.logger.Info("< ");
         }
     }
 }
