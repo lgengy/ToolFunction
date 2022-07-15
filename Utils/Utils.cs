@@ -183,20 +183,24 @@ public class Utils
     /// 获取路径下的所有文件
     /// </summary>
     /// <param name="path">路径</param>
+    /// <param name="returnType">文件返回形式：0-无 1-以创建时间倒序</param>
     /// <returns>文件list</returns>
-    public static List<string> GetFileFromPath(string path)
+    public static List<string> GetFileFromPath(string path, int returnType = 0)
     {
         GlobalData.logger.Info("> param: " + path);
         List<string> re = new List<string>();
         try
         {
-            if (!string.IsNullOrWhiteSpace(path))
+            if (!string.IsNullOrWhiteSpace(path) && Directory.Exists(path))
             {
-                foreach (string p in Directory.GetFileSystemEntries(path))
-                {
-                    if (Directory.Exists(p)) re.AddRange(GetFileFromPath(p));
-                    else re.Add(p);
-                }
+                DirectoryInfo di = new DirectoryInfo(path);
+                FileInfo[] arrfi = di.GetFiles();
+                if(returnType == 1) Array.Sort(arrfi, delegate (FileInfo x, FileInfo y) { return y.CreationTime.CompareTo(x.CreationTime); });
+                foreach (FileInfo file in arrfi) re.Add(file.FullName);
+            }
+            else
+            {
+                GlobalData.logger.Info("No path");
             }
         }
         catch (Exception ex)
