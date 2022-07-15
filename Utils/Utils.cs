@@ -302,7 +302,7 @@ public class Utils
     }
     #endregion
 
-    #region 显示相关
+    #region Component显示相关
     /// <summary>
     /// picturebox、button、label显示图片
     /// </summary>
@@ -402,6 +402,22 @@ public class Utils
                     }
                 }
         }
+    }
+    #endregion
+
+    #region 字符串处理
+    /// <summary>
+    /// 截取指定字符串之间的字符串
+    /// </summary>
+    /// <see cref="https://blog.csdn.net/u014479921/article/details/79637613"/>
+    /// <param name="text">全字符串</param>
+    /// <param name="start">开始字符串 </param>
+    /// <param name="end">结束字符串 </param>
+    /// <returns></returns>
+    public static string Substring(string text, string start, string end)
+    {
+        Regex rg = new Regex("(?<=(" + start + "))[.\\s\\S]*?(?=(" + end + "))", RegexOptions.Multiline | RegexOptions.Singleline);
+        return rg.Match(text).Value;
     }
 
     /// <summary>
