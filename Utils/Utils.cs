@@ -316,50 +316,57 @@ public class Utils
     /// <remarks>winform页面通过BeginInvoke调用此方法，可有效避免程序卡顿</remarks>
     private bool DisplayPicture(object com, string type, string imgPath)
     {
-        GlobalData.logger.Info("> params: " + type + "," + imgPath);
         bool result = false;
 
-        if (!string.IsNullOrEmpty(imgPath))
+        try
         {
-            Image img = null;
-            Bitmap bmp = null;
-
-            try
+            if (!string.IsNullOrEmpty(imgPath))
             {
-                if (!string.IsNullOrEmpty(imgPath))
+                FileStream fs = new FileStream(imgPath, FileMode.Open);
+                Image img = Image.FromStream(fs);
+
+                switch (type)
                 {
-                    img = Image.FromFile(imgPath);
-                    bmp = new Bitmap(img);
-
-                    switch (type)
-                    {
-                        case "picturebox":
-                            //PictureZoom.LoadImg(com as PictureBox, bmp);//使图片可缩放
-                            (com as PictureBox).Image = bmp;
-                            break;
-                        case "button":
-                            (com as Button).BackgroundImage = bmp;
-                            break;
-                        case "label":
-                            (com as Label).Image = bmp;
-                            break;
-                    }
-                    result = true;
+                    case "picturebox":
+                        if ((com as PictureBox).Image != null)
+                        {
+                            (com as PictureBox).Image.Dispose();
+                            (com as PictureBox).Image = null;
+                        }
+                        (com as PictureBox).Image = img;
+                        break;
+                    case "button":
+                        if ((com as Button).BackgroundImage != null)
+                        {
+                            (com as Button).BackgroundImage.Dispose();
+                            (com as Button).BackgroundImage = null;
+                        }
+                        (com as Button).BackgroundImage = img;
+                        break;
+                    case "label":
+                        if ((com as Label).Image != null)
+                        {
+                            (com as Label).Image.Dispose();
+                            (com as Label).Image = null;
+                        }
+                        (com as Label).Image = img;
+                        break;
                 }
-            }
-            catch (Exception ex)
-            {
-                GlobalData.logger.Warn(ex.Message);
-                GlobalData.logger.Error("", ex);
-            }
-            finally
-            {
-                if (img != null)
-                    img.Dispose();
+                
+                result = true;
+
+                fs.Close();
+                fs.Dispose();
+                GC.Collect();
             }
         }
+        catch (Exception ex)
+        {
+            GlobalData.logger.Warn("DisplayPicture: " + ex.Message);
+            GlobalData.logger.Error("DisplayPicture", ex);
+        }
 
-        GlobalData.logger.Info("< result: " + result);
+        GlobalData.logger.Info("DisplayPicture: " + type + "," + imgPath + "," + (result ? "success" : "fail"));
         return result;
     }
 
@@ -368,44 +375,32 @@ public class Utils
     /// </summary>
     /// <param name="com">控件名</param>
     /// <param name="type">组件类型：label、textbox、combobox</param>
-    /// <param name="text">单字段显示</param>
-    /// <param name="texts">多个字段显示到一个控件</param>
-    public static void DisplayText(object com, string type, string text, params string[] texts)
+    /// <param name="separator">分隔符</param>
+    /// <param name="texts">要显示的</param>
+    public static string DisplayText(object com, string type, string separator, params string[] texts)
     {
-        if (!string.IsNullOrWhiteSpace(text))
+        string showText = "";
+
+        foreach (string el in texts)
+            showText +=  el + separator;
+
+        switch (type)
         {
-            switch (type)
-            {
-                case "label":
-                    (com as Label).Text = text;
-                    break;
-                case "textbox":
-                    (com as TextBox).Text = text;
-                    break;
-                case "combobox":
-                    (com as ComboBox).SelectedText = text;
-                    break;
-            }
+            case "label":
+                (com as Label).Text = showText.Substring(0,showText.Length - separator.Length);
+                break;
+            case "textbox":
+                (com as TextBox).Text = showText.Substring(0, showText.Length - separator.Length);
+                break;
+            case "combobox":
+                (com as ComboBox).Text = showText.Substring(0, showText.Length - separator.Length);
+                break;
+            default:
+                showText = showText.Substring(0, showText.Length - separator.Length);
+                break;
         }
-        if (texts.Length > 0)
-        {
-            foreach (string el in texts)
-                if (!string.IsNullOrWhiteSpace(el))
-                {
-                    switch (type)
-                    {
-                        case "label":
-                            (com as Label).Text += " " + el;
-                            break;
-                        case "textbox":
-                            (com as TextBox).Text += " " + el;
-                            break;
-                        case "combobox":
-                            (com as ComboBox).Text += " " + el;
-                            break;
-                    }
-                }
-        }
+
+        return showText;
     }
     #endregion
 
