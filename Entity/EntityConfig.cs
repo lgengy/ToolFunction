@@ -42,7 +42,7 @@ namespace ProgrammeFrame.Entity
             }
             catch (Exception ex)
             {
-                //GlobalData.logger.Error("ReadXMLFile", ex);//启动运行会报错有这句的话
+                //GlobalData.logger.Error(ex);//启动运行会报错有这句的话
             }
         }
 
@@ -98,7 +98,7 @@ namespace ProgrammeFrame.Entity
             }
             catch (Exception ex)
             {
-                GlobalData.logger.Error("GetConfig\r\n", ex);
+                GlobalData.logger.Error(ex);
                 GlobalData.messageBox.ShowDialog("配置错误，请联系工作人员", friUIMessageBox.CUIMessageBox.MessageBoxButton.OKOnly, friUIMessageBox.CUIMessageBox.MessageBoxIcon.Error, "警告");
             }
             return config;

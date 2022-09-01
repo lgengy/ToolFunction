@@ -77,7 +77,7 @@ namespace ProgrammeFrame
             }
             catch (Exception ex)
             {
-                GlobalData.logger.Error("CloseKeyBoardFun", ex);
+                GlobalData.logger.Error(ex);
             }
         }
 
@@ -96,7 +96,7 @@ namespace ProgrammeFrame
             }
             catch (Exception ex)
             {
-                GlobalData.logger.Error("CloseKeyBoardFun", ex);
+                GlobalData.logger.Error(ex);
             }
         }
 

@@ -42,7 +42,7 @@ namespace ProgrammeFrame
         /// <param name="expiredDays">日期</param>
         private void DeletingExpiredLogs(string logDir, int expiredDays)
         {
-            GlobalData.logger.Info("> ");
+            GlobalData.logger.Info("Inn ");
             try
             {
                 List<string> listLogFile = Utils.GetFileFromPath(logDir);
@@ -60,9 +60,9 @@ namespace ProgrammeFrame
             catch (Exception ex)
             {
                 GlobalData.logger.Warn(ex.Message);
-                GlobalData.logger.Error("", ex);
+                GlobalData.logger.Error(ex);
             }
-            GlobalData.logger.Info("< ");
+            GlobalData.logger.Info("Out ");
         }
     }
 }

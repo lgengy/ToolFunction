@@ -92,7 +92,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error("", ex);
+            GlobalData.logger.Error(ex);
         }
     }
 
@@ -115,7 +115,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error("", ex);
+            GlobalData.logger.Error(ex);
         }
         finally
         {
@@ -176,7 +176,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error("", ex);
+            GlobalData.logger.Error(ex);
         }
     }
 
@@ -188,7 +188,7 @@ public class Utils
     /// <returns>文件list</returns>
     public static List<string> GetFileFromPath(string path, int returnType = 0)
     {
-        GlobalData.logger.Info("> param: " + path);
+        GlobalData.logger.Info("Inn param: " + path);
         List<string> re = new List<string>();
         try
         {
@@ -207,9 +207,9 @@ public class Utils
         catch (Exception ex)
         {
             GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error("", ex);
+            GlobalData.logger.Error(ex);
         }
-        GlobalData.logger.Info("< result: " + re.Count);
+        GlobalData.logger.Info("Out result: " + re.Count);
         return re;
     }
 
@@ -222,7 +222,7 @@ public class Utils
     /// <remarks>C:\a\b\c\d\e.txt，0返回C:\a\b\c\d\，1返回C:\，以此类推</remarks>
     public static string GetDirectoryFromPath(string path, int level = 0)
     {
-        GlobalData.logger.Info($"> params: {path}, {level}");
+        GlobalData.logger.Info($"Inn params: {path}, {level}");
         string returnDir = "";
         try
         {
@@ -241,9 +241,9 @@ public class Utils
         catch (Exception ex)
         {
             GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error("", ex);
+            GlobalData.logger.Error(ex);
         }
-        GlobalData.logger.Info("< return value: " + returnDir);
+        GlobalData.logger.Info("Out return value: " + returnDir);
         return returnDir;
     }
 
@@ -282,7 +282,7 @@ public class Utils
     /// <param name="path">多个路径以逗号“,”进行区分</param>
     public static void DeleteAllFilesFromPath(string paths)
     {
-        GlobalData.logger.Info("> param: " + paths);
+        GlobalData.logger.Info("Inn param: " + paths);
 
         string[] pathArray = paths.Split(',');
 
@@ -299,11 +299,11 @@ public class Utils
             catch (Exception ex)
             {
                 GlobalData.logger.Warn(ex.Message);
-                GlobalData.logger.Error("", ex);
+                GlobalData.logger.Error(ex);
             }
         }
 
-        GlobalData.logger.Info("<");
+        GlobalData.logger.Info("Out ");
     }
 
     /// <summary>
@@ -410,8 +410,8 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Warn("DisplayPicture: " + ex.Message);
-            GlobalData.logger.Error("DisplayPicture", ex);
+            GlobalData.logger.Warn(ex.Message);
+            GlobalData.logger.Error(ex);
         }
 
         GlobalData.logger.Info("DisplayPicture: " + type + "," + imgPath + "," + (result ? "success" : "fail"));
@@ -493,7 +493,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error("", ex);
+            GlobalData.logger.Error(ex);
             return "";
         }
     }
@@ -557,11 +557,11 @@ public class Utils
             }
             catch (Exception ex)
             {
-                GlobalData.logger.Error("", ex);
+                GlobalData.logger.Error(ex);
             }
         }
         else
-            GlobalData.logger.Error("要ping的IP为空");
+            GlobalData.logger.Warn("要ping的IP为空");
 
         return re;
     }
@@ -659,7 +659,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error("", ex);
+            GlobalData.logger.Error(ex);
             return null;
         }
     }
@@ -739,7 +739,7 @@ public class Utils
 
     private void EmptyFunftion()
     {
-        GlobalData.logger.Info("In");
+        GlobalData.logger.Info("Inn ");
         try
         {
 
@@ -749,7 +749,7 @@ public class Utils
             GlobalData.logger.Warn(ex.Message);
             GlobalData.logger.Error(ex);
         }
-        GlobalData.logger.Info("Out");
+        GlobalData.logger.Info("Out ");
     }
     #endregion
 

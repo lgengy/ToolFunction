@@ -46,7 +46,7 @@ namespace ProgrammeFrame
 
         private List<RollingFileAppender> CreateRollingFileAppender(string logName, string logNameError, string logPath, string maxFileSize, int maxLogCount, bool enableErrorLog)
         {
-            var patternLayout = new PatternLayout("%date [%2thread] %-5level %-20method - %message%newline");
+            var patternLayout = new PatternLayout("%date [%2thread] %-5level %method - %message%newline");
             patternLayout.ActivateOptions();
 
             List<RollingFileAppender> rollingFileAppender = new List<RollingFileAppender>(2);
@@ -99,13 +99,13 @@ namespace ProgrammeFrame
         /// <param name="additivity">日志是否同时写入父实例的appender</param>
         /// <param name="logName">日志名，不能重复</param>
         /// <param name="logNameError">错误日志名，不能重复</param>
-        /// <param name="logPath">日志路径，默认D:\Fiscan\Log\</param>
+        /// <param name="logPath">日志路径</param>
         /// <param name="maxFileSize">日志最大容量,单位KB、MB、GB，默认10MB</param>
         /// <param name="maxLogCount">日志最大保存数，默认50</param>
         /// <remarks>
         /// 根据传入的信息的为每一个logger实例都创建自己的appender
         /// </remarks>
-        public ILog GetLogger(string name, bool enableErrorLog, bool additivity, string logName, string logNameError, string logPath = "", string maxFileSize = "10MB", int maxLogCount = 50)
+        public ILog GetLogger(string name, bool enableErrorLog, bool additivity, string logName, string logNameError, string logPath, string maxFileSize = "10MB", int maxLogCount = 50)
         {
             var logger = hierarchy.GetLogger(name, hierarchy.LoggerFactory);
             logger.Hierarchy = hierarchy;

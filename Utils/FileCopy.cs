@@ -51,7 +51,7 @@ namespace ProgrammeFrame
 
         private void BgFileCopy_DoWork(object sender, DoWorkEventArgs e)
         {
-            GlobalData.logger.Info(">" + MethodBase.GetCurrentMethod().Name);
+            GlobalData.logger.Info("Inn ");
             try
             {
                 StruFileCopyParams file = (StruFileCopyParams)e.Argument;
@@ -61,9 +61,9 @@ namespace ProgrammeFrame
             catch (Exception ex)
             {
                 GlobalData.logger.Warn(ex.Message);
-                GlobalData.logger.Error(MethodBase.GetCurrentMethod().Name, ex);
+                GlobalData.logger.Error(ex);
             }
-            GlobalData.logger.Info("<" + MethodBase.GetCurrentMethod().Name);
+            GlobalData.logger.Info("Out ");
         }
 
         private void BgFileCopy_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -96,7 +96,7 @@ namespace ProgrammeFrame
             catch(Exception ex)
             {
                 GlobalData.logger.Warn(ex.Message);
-                GlobalData.logger.Error(MethodBase.GetCurrentMethod().Name, ex);
+                GlobalData.logger.Error(ex);
             }
         }
 
@@ -108,7 +108,7 @@ namespace ProgrammeFrame
         /// <param name="create">true-创建 false-删除</param>
         private void FileDirectoryOperate(string dir, bool create)
         {
-            GlobalData.logger.Info(">" + MethodBase.GetCurrentMethod().Name);
+            GlobalData.logger.Info("Inn ");
             try
             {
                 //如果目录参数为空抛出异常
@@ -149,9 +149,9 @@ namespace ProgrammeFrame
             catch (Exception ex)
             {
                 GlobalData.logger.Warn(ex.Message);
-                GlobalData.logger.Error(MethodBase.GetCurrentMethod().Name, ex);
+                GlobalData.logger.Error(ex);
             }
-            GlobalData.logger.Info("<" + MethodBase.GetCurrentMethod().Name);
+            GlobalData.logger.Info("Out ");
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace ProgrammeFrame
                 catch (Exception ex)
                 {
                     GlobalData.logger.Warn(ex.Message);
-                    GlobalData.logger.Error(MethodBase.GetCurrentMethod().Name, ex);
+                    GlobalData.logger.Error(ex);
                 }
             }
             return re;

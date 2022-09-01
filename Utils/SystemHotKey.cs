@@ -33,7 +33,7 @@
                 }
                 catch (Exception ex)
                 {
-                    GlobalData.logger.Error("WndProc", ex);
+                    GlobalData.logger.Error(ex);
                 }
            }
 
