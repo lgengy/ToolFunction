@@ -117,7 +117,7 @@ namespace ProgrammeFrame
             logger.Level = Level.Debug;
             logger.Additivity = additivity;
 
-            var x = hierarchy.GetCurrentLoggers();//测试用
+            //var x = hierarchy.GetCurrentLoggers();//测试用
 
             return LogManager.GetLogger(name);
         }

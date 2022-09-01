@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Reflection;
@@ -303,6 +304,53 @@ public class Utils
         }
 
         GlobalData.logger.Info("<");
+    }
+
+    /// <summary>
+    /// 把一个文件夹下所有文件复制到另一个文件夹下 
+    /// </summary>
+    /// <param name="sourceDirectory">源目录</param>
+    /// <param name="targetDirectory">目标目录</param>
+    /// <param name="exceptDir">不用复制的目录</param>
+    /// <param name="exceptFile">不用复制的文件</param>
+    /// <see cref="https://blog.csdn.net/CatchMe_439/article/details/54614404"/>
+    public static void DirectoryCopy(string sourceDirectory, string targetDirectory, string[] exceptDir = null, string[] exceptFile = null)
+    {
+        try
+        {
+            DirectoryInfo dir = new DirectoryInfo(sourceDirectory);
+            //获取目录下（不包含子目录）的文件和子目录
+            FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
+
+            if (!Directory.Exists(targetDirectory)) Directory.CreateDirectory(targetDirectory);
+
+            foreach (FileSystemInfo i in fileinfo)
+            {
+                if (i is DirectoryInfo)     //判断是否文件夹
+                {
+                    if (exceptDir == null || (exceptDir != null && !exceptDir.Contains(i.Name)))
+                    {
+                        if (!Directory.Exists(targetDirectory + "\\" + i.Name))
+                        {
+                            //目标目录下不存在此文件夹即创建子文件夹
+                            Directory.CreateDirectory(targetDirectory + "\\" + i.Name);
+                        }
+                        //递归调用复制子文件夹
+                        DirectoryCopy(i.FullName, targetDirectory + "\\" + i.Name, exceptDir, exceptFile);
+                    }
+                }
+                else
+                {
+                    //不是文件夹即复制文件，true表示可以覆盖同名文件
+                    if (exceptFile == null || (exceptFile != null && !exceptFile.Contains(i.Name)))
+                        File.Copy(i.FullName, targetDirectory + "\\" + i.Name, true);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            GlobalData.logger.Error(ex);
+        }
     }
     #endregion
 
@@ -650,9 +698,48 @@ public class Utils
         return sb.ToString();
     }
 
+    /// <summary>
+    /// 执行cmd命令
+    /// </summary>
+    /// <param name="command">命令</param>
+    /// <see cref="https://thrower.cc/2021/csharpusecmd/"/>
+    public static void CMDExecute(string command)
+    {
+        GlobalData.logger.Info("CMDExecute: " + command);
+        Process p = new Process();
+        p.StartInfo.FileName = "cmd.exe";//要启动的应用程序
+        p.StartInfo.UseShellExecute = false;//不使用操作系统shell启动
+        p.StartInfo.RedirectStandardInput = true; //接受来自调用程序的输入信息
+        p.StartInfo.RedirectStandardOutput = true;//允许输出信息
+        p.StartInfo.RedirectStandardError = true;//允许输出错误
+        p.StartInfo.CreateNoWindow = true;//不显示程序窗口
+        p.Start();//启动程序
+        p.StandardInput.WriteLine(command);//向cmd窗口发送输入命令
+        p.StandardInput.AutoFlush = true;//自动刷新
+        p.Close();//
+    }
+
+    /// <summary>
+    /// 获取系统主板识别码
+    /// </summary>
+    /// <see cref="https://zyzsdy.com/article/87"/>
+    /// <returns>主板识别码</returns>
+    public static string GetSystemUUId()
+    {
+        string uuid = null;
+        using (ManagementObjectSearcher mos = new ManagementObjectSearcher("select * from Win32_ComputerSystemProduct"))
+        {
+            foreach (var item in mos.Get())
+            {
+                uuid = item["UUID"].ToString();
+            }
+        }
+        return uuid;
+    }
+
     private void EmptyFunftion()
     {
-        GlobalData.logger.Info("> ");
+        GlobalData.logger.Info("In");
         try
         {
 
@@ -660,9 +747,9 @@ public class Utils
         catch (Exception ex)
         {
             GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error("", ex);
+            GlobalData.logger.Error(ex);
         }
-        GlobalData.logger.Info("< ");
+        GlobalData.logger.Info("Out");
     }
     #endregion
 
