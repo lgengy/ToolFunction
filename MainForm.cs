@@ -6,8 +6,7 @@
 *
 * 描  述：主界面函数
 * 
-* 使  用：1、建议通过脚手架一键生成开发环境；
-*         2、默认使用通过配置文件设置的log4net，若要改为通过编程配置，请注释调Program类16行、GlobalData类18行，取消对GlobalData类19行的注释
+* 使  用：1、建议通过脚手架一键生成开发环境。
 *
 ********************************************************************/
 
@@ -28,9 +27,10 @@ namespace ProgrammeFrame
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            GlobalData.logger.Info("==============================程序启动==============================");
-            GlobalData.logger.Info("==========================版本号：1.0.0.1===========================");
-            GlobalData.logger.Info("====================================================================");
+            GlobalData.logger.Info("".PadLeft(50,'=').PadRight(100,'='));
+            GlobalData.logger.Info("程序启动".PadLeft(48, '=').PadRight(96, '='));
+            GlobalData.logger.Info("版本号：1.0.0.1".PadLeft(51, '=').PadRight(96, '='));
+            GlobalData.logger.Info("".PadLeft(50, '=').PadRight(100, '='));
 
             DeletingExpiredLogs(@"D:\Log\ProgrammeFrame\", 90);
         }

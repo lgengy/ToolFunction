@@ -683,17 +683,17 @@ public class Utils
     /// <summary>
     /// 生成指定长度随机数
     /// </summary>
-    /// <param name="iLength"></param>
+    /// <param name="iLength">生成字符串长度</param>
+    /// <param name="seed">种子库，可以为任何不同字符组成的字符串</param>
     /// <returns></returns>
-    public static string GetRandomString(int iLength)
+    public static string GetRandomString(int iLength, string seed = "0123456789")
     {
-        string buffer = "0123456789";// 随机字符中也可以为汉字（任何）
         StringBuilder sb = new StringBuilder();
         Random r = new Random();
-        int range = buffer.Length;
+        int range = seed.Length;
         for (int i = 0; i < iLength; i++)
         {
-            sb.Append(buffer.Substring(r.Next(range), 1));
+            sb.Append(seed.Substring(r.Next(range), 1));
         }
         return sb.ToString();
     }

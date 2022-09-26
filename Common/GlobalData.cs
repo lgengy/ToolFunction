@@ -8,6 +8,7 @@
 
 using friUIMessageBox;
 using log4net;
+using ProgrammeFrame.Common.db;
 using ProgrammeFrame.Entity;
 
 namespace ProgrammeFrame.Common
@@ -18,6 +19,6 @@ namespace ProgrammeFrame.Common
         public static readonly ILog logger = LogManager.GetLogger("ProgrammeFrame");
         //public static readonly ILog logger = new Log(1).GetLogger("ProgrammeFrame", true,true, "ProgrammeFrame", "ProgrammeFrameErr", "D:\\Log\\ProgrammeFrame\\");
         public static EntityConfig config = EntityConfig.GetConfig();
-        public static db.QueryControlImplement myQueryControl = new db.QueryControlImplement();
+        public static SQLOperation sqlOperation = new SQLOperation();
     }
 }
