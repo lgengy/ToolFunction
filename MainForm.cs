@@ -12,17 +12,20 @@
 
 using ProgrammeFrame.Common;
 using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ProgrammeFrame
 {
     public partial class MainForm : Form
     {
+        private System.Timers.Timer timerLogDelete = new System.Timers.Timer(1000 * 60 * 60);//每隔一小时执行一次
+
         public MainForm()
         {
             InitializeComponent();
+
+            timerLogDelete.Elapsed += TimerLogDelete_Elapsed;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -32,37 +35,17 @@ namespace ProgrammeFrame
             GlobalData.logger.Info("版本号：1.0.0.1".PadLeft(51, '=').PadRight(96, '='));
             GlobalData.logger.Info("".PadLeft(50, '=').PadRight(100, '='));
 
-            DeletingExpiredLogs(@"D:\Log\ProgrammeFrame\", 90);
+            Task.Factory.StartNew(() => { Utils.DeletingExpiredLogs(@"D:\Log\ProgrammeFrame\", 90); }).ContinueWith(task => timerLogDelete.Start());//创建任务删除过期日志，并在任务结束之后启动timerLogDelete
         }
 
-        /// <summary>
-        /// 删除指定位置、指定日期前的日志
-        /// </summary>
-        /// <param name="logDir">位置</param>
-        /// <param name="expiredDays">日期</param>
-        private void DeletingExpiredLogs(string logDir, int expiredDays)
+        private void TimerLogDelete_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            GlobalData.logger.Info("Inn ");
-            try
+            //只在凌晨2点至3点删除日志
+            if(DateTime.Now.Hour > 1 && DateTime.Now.Hour < 4)
             {
-                List<string> listLogFile = Utils.GetFileFromPath(logDir);
-                if (listLogFile.Count > 0)
-                    foreach (string logPath in listLogFile)
-                    {
-                        FileInfo file = new FileInfo(logPath);
-                        if ((DateTime.Now - file.LastWriteTime).TotalDays > expiredDays)
-                        {
-                            file.Delete();
-                            GlobalData.logger.Info("Deleting log: " + file.Name);
-                        }
-                    }
+                GlobalData.logger.Info("检查过期日志");
+                Task.Factory.StartNew(() => { Utils.DeletingExpiredLogs(@"D:\Log\ProgrammeFrame\", 90); });
             }
-            catch (Exception ex)
-            {
-                GlobalData.logger.Warn(ex.Message);
-                GlobalData.logger.Error(ex);
-            }
-            GlobalData.logger.Info("Out ");
         }
     }
 }

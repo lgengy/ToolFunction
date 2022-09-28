@@ -184,9 +184,9 @@ public class Utils
     /// 获取路径下的所有文件
     /// </summary>
     /// <param name="path">路径</param>
-    /// <param name="returnType">文件返回形式：0-无 1-以创建时间倒序</param>
+    /// <param name="comparison">对文件进行排序的委托</param>
     /// <returns>文件list</returns>
-    public static List<string> GetFileFromPath(string path, int returnType = 0)
+    public static List<string> GetFileFromPath(string path, Comparison<string> comparison = null)
     {
         GlobalData.logger.Info("Inn param: " + path);
         List<string> re = new List<string>();
@@ -194,10 +194,15 @@ public class Utils
         {
             if (!string.IsNullOrWhiteSpace(path) && Directory.Exists(path))
             {
-                DirectoryInfo di = new DirectoryInfo(path);
-                FileInfo[] arrfi = di.GetFiles();
-                if(returnType == 1) Array.Sort(arrfi, delegate (FileInfo x, FileInfo y) { return y.CreationTime.CompareTo(x.CreationTime); });
-                foreach (FileInfo file in arrfi) re.Add(file.FullName);
+                re.AddRange(Directory.GetFiles(path));
+                if(Directory.GetDirectories(path).Length > 0)
+                {
+                    foreach(string dir in Directory.GetDirectories(path))
+                    {
+                        re.AddRange(GetFileFromPath(dir, comparison));
+                    }
+                }
+                if(comparison != null) re.Sort(comparison);
             }
             else
             {
@@ -303,6 +308,36 @@ public class Utils
             }
         }
 
+        GlobalData.logger.Info("Out ");
+    }
+
+    /// <summary>
+    /// 删除指定位置、指定日期前的日志
+    /// </summary>
+    /// <param name="logDir">位置</param>
+    /// <param name="expiredDays">日期</param>
+    public static void DeletingExpiredLogs(string logDir, int expiredDays)
+    {
+        GlobalData.logger.Info("Inn ");
+        try
+        {
+            List<string> listLogFile = Utils.GetFileFromPath(logDir);
+            if (listLogFile.Count > 0)
+                foreach (string logPath in listLogFile)
+                {
+                    FileInfo file = new FileInfo(logPath);
+                    if ((DateTime.Now - file.LastWriteTime).TotalDays > expiredDays && file.Exists)
+                    {
+                        file.Delete();
+                        GlobalData.logger.Info("Deleting log: " + file.FullName);
+                    }
+                }
+        }
+        catch (Exception ex)
+        {
+            GlobalData.logger.Warn(ex.Message);
+            GlobalData.logger.Error(ex);
+        }
         GlobalData.logger.Info("Out ");
     }
 
