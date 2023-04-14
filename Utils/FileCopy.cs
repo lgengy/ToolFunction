@@ -5,6 +5,8 @@
 * 作  者：lgengy
 *
 * 描  述：实现文件同步/异步拷贝
+* 
+* 说  明：1、新建FileCopy对象，依照目的向构造函数传参；2、调用CopyFile或CopyFileAsyn实现拷贝
 *
 ********************************************************************/
 
@@ -104,7 +106,6 @@ namespace ProgrammeFrame
         /// 文件目录操作
         /// </summary>
         /// <param name="dir">目录</param>
-        /// <param name="server">目录所在服务器IP，在本机上操作目录的话此项为空</param>
         /// <param name="create">true-创建 false-删除</param>
         private void FileDirectoryOperate(string dir, bool create)
         {
