@@ -11,6 +11,7 @@
 using ProgrammeFrame;
 using ProgrammeFrame.Common;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -32,39 +33,36 @@ public class Utils
     /// <summary>
     /// 判断DataSet变量里是否有数据
     /// </summary>
+    /// <param name="ds"></param>
+    /// <param name="objectt">数据集标识名</param>
     /// <returns>true-有数据 false-没数据</returns>
-    public static bool CheckDBSetValidData(DataSet ds)
+    public static bool CheckDBSetValidData(DataSet ds, string objectt = "")
     {
         bool returnValue = false;
-        if (ds != null)
+        try
         {
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            if (ds != null)
             {
-                returnValue = true;
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    returnValue = true;
+                }
+                else
+                {
+                    GlobalData.logger.Info(objectt + " No datas");
+                }
             }
             else
             {
-                GlobalData.logger.Info("No datas");
+                GlobalData.logger.Info(objectt + " 获取的数据集为null");
             }
         }
+        catch (Exception ex)
+        {
+            GlobalData.logger.Warn(objectt + " 异常：" + ex.Message);
+            GlobalData.logger.Error(ex);
+        }
         return returnValue;
-    }
-
-    /// <summary>
-    /// 判断datarow的列元素是否为null或空
-    /// </summary>
-    /// <param name="el">DataRow row["CloumnName"]</param>
-    /// <returns>true-没数据 false-有数据</returns>
-    public static bool CheckRowElementIsNullOrEmpty(object el)
-    {
-        if (el != DBNull.Value && !string.IsNullOrEmpty(el.ToString()))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
     }
     #endregion
 
@@ -82,7 +80,10 @@ public class Utils
             {
                 if (!node.HasChildNodes && node.NodeType == XmlNodeType.Text)
                 {
-                    dic.Add(node.ParentNode.Name, node.InnerText);
+                    if (!dic.ContainsKey(node.ParentNode.Name))
+                        dic.Add(node.ParentNode.Name, node.InnerText);
+                    else
+                        GlobalData.logger.Warn($"{node.ParentNode.Name}重复，值{node.InnerText}，已保存的值为{dic[node.ParentNode.Name]}");
                 }
                 else
                 {
@@ -353,32 +354,35 @@ public class Utils
     {
         try
         {
-            DirectoryInfo dir = new DirectoryInfo(sourceDirectory);
-            //获取目录下（不包含子目录）的文件和子目录
-            FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
-
-            if (!Directory.Exists(targetDirectory)) Directory.CreateDirectory(targetDirectory);
-
-            foreach (FileSystemInfo i in fileinfo)
+            if (!string.IsNullOrEmpty(sourceDirectory) && !string.IsNullOrEmpty(targetDirectory))
             {
-                if (i is DirectoryInfo)     //判断是否文件夹
+                DirectoryInfo dir = new DirectoryInfo(sourceDirectory);
+                //获取目录下（不包含子目录）的文件和子目录
+                FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();
+
+                if (!Directory.Exists(targetDirectory)) Directory.CreateDirectory(targetDirectory);
+
+                foreach (FileSystemInfo i in fileinfo)
                 {
-                    if (exceptDir == null || (exceptDir != null && !exceptDir.Contains(i.Name)))
+                    if (i is DirectoryInfo)     //判断是否文件夹
                     {
-                        if (!Directory.Exists(targetDirectory + "\\" + i.Name))
+                        if (exceptDir == null || (exceptDir != null && !exceptDir.Contains(i.Name)))
                         {
-                            //目标目录下不存在此文件夹即创建子文件夹
-                            Directory.CreateDirectory(targetDirectory + "\\" + i.Name);
+                            if (!Directory.Exists(targetDirectory + "\\" + i.Name))
+                            {
+                                //目标目录下不存在此文件夹即创建子文件夹
+                                Directory.CreateDirectory(targetDirectory + "\\" + i.Name);
+                            }
+                            //递归调用复制子文件夹
+                            DirectoryCopy(i.FullName, targetDirectory + "\\" + i.Name, exceptDir, exceptFile);
                         }
-                        //递归调用复制子文件夹
-                        DirectoryCopy(i.FullName, targetDirectory + "\\" + i.Name, exceptDir, exceptFile);
                     }
-                }
-                else
-                {
-                    //不是文件夹即复制文件，true表示可以覆盖同名文件
-                    if (exceptFile == null || (exceptFile != null && !exceptFile.Contains(i.Name)))
-                        File.Copy(i.FullName, targetDirectory + "\\" + i.Name, true);
+                    else
+                    {
+                        //不是文件夹即复制文件，true表示可以覆盖同名文件
+                        if (exceptFile == null || (exceptFile != null && !exceptFile.Contains(i.Name)))
+                            File.Copy(i.FullName, targetDirectory + "\\" + i.Name, true);
+                    }
                 }
             }
         }
@@ -397,7 +401,7 @@ public class Utils
     /// <param name="type">控件类型</param>
     /// <param name="imgPath">图片完整路径</param>
     /// <remarks>winform页面通过BeginInvoke调用此方法，可有效避免程序卡顿</remarks>
-    private bool DisplayPicture(object com, string type, string imgPath)
+    public static bool DisplayPicture(object com, string type, string imgPath)
     {
         bool result = false;
 
@@ -405,41 +409,38 @@ public class Utils
         {
             if (!string.IsNullOrEmpty(imgPath))
             {
-                FileStream fs = new FileStream(imgPath, FileMode.Open);
-                Image img = Image.FromStream(fs);
-
-                switch (type)
+                if (type.Equals("picturebox"))
+                    (com as PictureBox).ImageLocation = imgPath;
+                else
                 {
-                    case "picturebox":
-                        if ((com as PictureBox).Image != null)
-                        {
-                            (com as PictureBox).Image.Dispose();
-                            (com as PictureBox).Image = null;
-                        }
-                        (com as PictureBox).Image = img;
-                        break;
-                    case "button":
-                        if ((com as Button).BackgroundImage != null)
-                        {
-                            (com as Button).BackgroundImage.Dispose();
-                            (com as Button).BackgroundImage = null;
-                        }
-                        (com as Button).BackgroundImage = img;
-                        break;
-                    case "label":
-                        if ((com as Label).Image != null)
-                        {
-                            (com as Label).Image.Dispose();
-                            (com as Label).Image = null;
-                        }
-                        (com as Label).Image = img;
-                        break;
-                }
-                
-                result = true;
+                    FileStream fs = new FileStream(imgPath, FileMode.Open);
+                    Image img = Image.FromStream(fs);
 
-                fs.Close();
-                fs.Dispose();
+                    switch (type)
+                    {
+                        case "button":
+                            if ((com as Button).BackgroundImage != null)
+                            {
+                                (com as Button).BackgroundImage.Dispose();
+                                (com as Button).BackgroundImage = null;
+                            }
+                            (com as Button).BackgroundImage = img;
+                            break;
+                        case "label":
+                            if ((com as Label).Image != null)
+                            {
+                                (com as Label).Image.Dispose();
+                                (com as Label).Image = null;
+                            }
+                            (com as Label).Image = img;
+                            break;
+                    }
+
+                    fs.Close();
+                    fs.Dispose();
+                }
+
+                result = true;
                 GC.Collect();
             }
         }
@@ -484,6 +485,35 @@ public class Utils
         }
 
         return showText;
+    }
+
+    /// <summary>
+    /// 通用下拉框赋值函数
+    /// </summary>
+    /// <param name="cbx">下拉框组件</param>
+    /// <param name="ds">数据源Dataset</param>
+    /// <param name="key">选中后实际获取的值</param>
+    /// <param name="value">下拉框显示的值</param>
+    /// <param name="isAll">是否添加全部选项，默认不添加</param>
+    public static void SetGeneralCombobox(ComboBox cbx, DataSet ds, string key, string value, bool isAll = false)
+    {
+        List<DictionaryEntry> listComboBox = new List<DictionaryEntry>();
+        if (CheckDBSetValidData(ds))
+        {
+            if (isAll) listComboBox.Add(new DictionaryEntry("", "全部"));
+            for (int k = 0; k < ds.Tables[0].Rows.Count; k++)
+            {
+                //这里没有判断值是否为null就直接添加了，在使用的时候需要判断下
+                listComboBox.Add(new DictionaryEntry(ds.Tables[0].Rows[k][key], ds.Tables[0].Rows[k][value]));
+            }
+
+            cbx.DataSource = listComboBox;
+            cbx.DisplayMember = "value";
+            cbx.ValueMember = "key";
+
+            if (isAll) cbx.SelectedIndex = 0;
+            else cbx.SelectedItem = null;
+        }
     }
     #endregion
 
@@ -555,6 +585,11 @@ public class Utils
         }
         return true;
     }
+
+    public static bool IsNullOrDBNull(object obj)
+    {
+        return ((obj is DBNull) || string.IsNullOrEmpty(obj.ToString())) ? true : false;
+    }
     #endregion
 
     #region 网络相关
@@ -609,15 +644,23 @@ public class Utils
     /// <param name="pwd">远程主机密码</param>
     public static void NetUseServer(string ip, string userName, string pwd)
     {
-        Process process = new Process();
-        process.StartInfo.FileName = "cmd.exe";
-        process.StartInfo.UseShellExecute = false;        //是否使用操作系统shell启动
-        process.StartInfo.RedirectStandardInput = true;   //接受来自调用程序的输入信息
-        process.StartInfo.RedirectStandardOutput = true;  //由调用程序获取输出信息
-        process.StartInfo.RedirectStandardError = true;   //重定向标准错误输出
-        process.StartInfo.CreateNoWindow = true;          //不显示程序窗口
-        process.Start();
-        process.StandardInput.WriteLine(@"net use \\" + ip + " /user:" + userName + " " + pwd + " &&exit");//向cmd窗口发送输入信息
+        try
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = "cmd.exe";
+            process.StartInfo.UseShellExecute = false;        //是否使用操作系统shell启动
+            process.StartInfo.RedirectStandardInput = true;   //接受来自调用程序的输入信息
+            process.StartInfo.RedirectStandardOutput = true;  //由调用程序获取输出信息
+            process.StartInfo.RedirectStandardError = true;   //重定向标准错误输出
+            process.StartInfo.CreateNoWindow = true;          //不显示程序窗口
+            process.Start();
+            process.StandardInput.WriteLine(@"net use \\" + ip + " /user:" + userName + " " + pwd + " &&exit");//向cmd窗口发送输入信息
+        }
+        catch (Exception ex)
+        {
+            GlobalData.logger.Warn(ex.Message);
+            GlobalData.logger.Error(ex);
+        }
     }
 
     /// <summary>
@@ -642,7 +685,7 @@ public class Utils
     /// </summary>
     /// <param name="localSubNetwork">网段</param>
     /// <param name="count">次数，默认10次</param>
-    private static string GetLocalIPMatchedSubNetwork(string localSubNetwork, int count = 10)
+    public static string GetLocalIPMatchedSubNetwork(string localSubNetwork, int count = 10)
     {
         string localIP = "";
 
@@ -697,6 +740,72 @@ public class Utils
             GlobalData.logger.Error(ex);
             return null;
         }
+    }
+
+    /// <summary>
+    /// DataTable 转实体类
+    /// </summary>
+    /// <typeparam name="T">实体类型</typeparam>
+    /// <remarks>
+    /// 参见：https://www.cnblogs.com/zhang1f/p/11469473.html
+    /// </remarks>
+    public static List<T> DataTabletoEntity<T>(DataTable dt) where T : new()
+    {
+        if (dt == null || dt.Rows.Count == 0)
+        {
+            return null;
+        }
+        List<T> modelList = new List<T>();
+        foreach (DataRow dr in dt.Rows)
+        {
+            T model = new T();
+            for (int i = 0; i < dr.Table.Columns.Count; i++)
+            {
+                PropertyInfo propertyInfo = model.GetType().GetProperty(dr.Table.Columns[i].ColumnName);
+                if (propertyInfo != null && dr[i] != DBNull.Value)
+                    propertyInfo.SetValue(model, dr[i], null);
+            }
+
+            modelList.Add(model);
+        }
+        return modelList;
+    }
+
+    /// <summary>
+    /// 将DataRow转换为实体类
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="dr"></param>
+    /// <returns></returns>
+    public static T DataRowtoEntity<T>(DataRow dr)
+    {
+        T model = Activator.CreateInstance<T>();
+        foreach (PropertyInfo pi in model.GetType().GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance))
+        {
+            if (dr.Table.Columns.Contains(pi.Name) && !IsNullOrDBNull(dr[pi.Name]))
+            {
+                pi.SetValue(model, HackType(dr[pi.Name], pi.PropertyType), null);
+            }
+        }
+        return model;
+    }
+
+    private static object HackType(object value, Type conversionType)
+    {
+        if (conversionType.IsGenericType && conversionType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+        {
+            if (value == null)
+                return null;
+            System.ComponentModel.NullableConverter nullableConverter = new System.ComponentModel.NullableConverter(conversionType);
+            conversionType = nullableConverter.UnderlyingType;
+        }
+        if (conversionType == typeof(int) && (value == null || value.ToString().Length == 0))
+            value = 0;
+        if (conversionType == typeof(double) && (value == null || value.ToString().Length == 0))
+            value = 0;
+        if (conversionType == typeof(decimal) && (value == null || value.ToString().Length == 0))
+            value = 0;
+        return Convert.ChangeType(value, conversionType);
     }
     #endregion
 
