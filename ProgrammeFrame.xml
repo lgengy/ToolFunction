@@ -4,6 +4,7 @@
 		<appender name="ProgrammeFrameLog" type="log4net.Appender.RollingFileAppender" >
 			<file value="D:\Log\ProgrammeFrame\ProgrammeFrame.log" />
 			<appendToFile value="true" />
+			<lockingModel type="log4net.Appender.FileAppender+MinimalLock" />
 			<PreserveLogFileNameExtension value="true" />
 			<maximumFileSize value="2MB" />
 			<maxSizeRollBackups value="50" />
@@ -15,9 +16,10 @@
 				<levelMax value="WARN" />
 			</filter>
 		</appender>
-		<appender name="ProgrammeFrameErrorLog" type="log4net.Appender.RollingFileAppender" >
-			<file value="D:\Log\ProgrammeFrame\ProgrammeFrameError.log" />
+		<appender name="ProgrammeFrameErrLog" type="log4net.Appender.RollingFileAppender" >
+			<file value="D:\Log\ProgrammeFrame\ProgrammeFrameErr.log" />
 			<appendToFile value="true" />
+			<lockingModel type="log4net.Appender.FileAppender+MinimalLock" />
 			<PreserveLogFileNameExtension value="true" />
 			<maximumFileSize value="2MB" />
 			<maxSizeRollBackups value="50" />
@@ -32,7 +34,7 @@
 		<logger name="ProgrammeFrame">
 			<level value="INFO" />
 			<appender-ref ref="ProgrammeFrameLog" />
-			<appender-ref ref="ProgrammeFrameErrorLog" />
+			<appender-ref ref="ProgrammeFrameErrLog" />
 		</logger>
 	</log4net>
 </configuration>

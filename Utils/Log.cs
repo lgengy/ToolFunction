@@ -7,6 +7,10 @@
 * 描  述：log4net可编程配置
 * 
 * 参  见：GetLogger方法实现移步https://stackoverflow.com/questions/52912682/cant-configure-log4net-logger-programmatically
+* 
+* 说  明：无论是通过程序还是配置文件配置log4net，默认LockingModel为非占用模式，即程序运行中可写/删除日志文件，但是这种模式 有可能会
+*         降低日志记录速度(https://logging.apache.org/log4net/release/sdk/html/T_log4net_Appender_FileAppender_MinimalLock.htm)，存
+*         在拖慢程序的风险，请根据实际情况选择是否使用此种模式。
 *
 ********************************************************************/
 
@@ -60,6 +64,7 @@ namespace ProgrammeFrame
                 MaxSizeRollBackups = maxLogCount,
                 StaticLogFileName = true,
                 Layout = patternLayout,
+                LockingModel = new FileAppender.MinimalLock()
             });
             rollingFileAppender[0].ActivateOptions();
 
@@ -76,6 +81,7 @@ namespace ProgrammeFrame
                     MaxSizeRollBackups = maxLogCount,
                     StaticLogFileName = true,
                     Layout = patternLayout,
+                    LockingModel = new FileAppender.MinimalLock()
                 });
                 rollingFileAppender[1].ActivateOptions();
 
