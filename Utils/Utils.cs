@@ -602,7 +602,7 @@ public class Utils
     public static bool NetWorkStatusVerify(string ip, int checkCount = 5)
     {
         bool re = false;
-        if (!ip.Equals(""))
+        if (!string.IsNullOrEmpty(ip))
         {
             int pingCount = 0;
             IPStatus pingStatus = IPStatus.BadRoute;
@@ -623,6 +623,7 @@ public class Utils
                 else
                 {
                     GlobalData.logger.Info(">>>>>>>>ping" + ip + "失败，ping了" + pingCount + "次<<<<<<<<");
+                    if (!GlobalData.netRecoverForm.isShowed) GlobalData.netRecoverForm.ShowNetRecoverForm();
                 }
             }
             catch (Exception ex)

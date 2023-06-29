@@ -20,12 +20,18 @@ namespace ProgrammeFrame
     public partial class MainForm : Form
     {
         private System.Timers.Timer timerLogDelete = new System.Timers.Timer(1000 * 60 * 60);//每隔一小时执行一次
+        /// <summary>
+        /// 标识是否网络故障
+        /// </summary>
+        private bool isNetBroken = false;
 
         public MainForm()
         {
             InitializeComponent();
 
             timerLogDelete.Elapsed += TimerLogDelete_Elapsed;
+            GlobalData.netRecoverForm.NetBrokenEvent += NetRecoverForm_NetBrokenEvent;
+            GlobalData.netRecoverForm.NetRecoverEvent += NetRecoverForm_NetRecoverEvent;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -38,6 +44,7 @@ namespace ProgrammeFrame
             Task.Factory.StartNew(() => { Utils.DeletingExpiredLogs(@"D:\Log\ProgrammeFrame\", 90); }).ContinueWith(task => timerLogDelete.Start());//创建任务删除过期日志，并在任务结束之后启动timerLogDelete
         }
 
+        #region 系统事件
         private void TimerLogDelete_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             //只在凌晨2点至3点删除日志
@@ -47,5 +54,22 @@ namespace ProgrammeFrame
                 Task.Factory.StartNew(() => { Utils.DeletingExpiredLogs(@"D:\Log\ProgrammeFrame\", 90); });
             }
         }
+
+        /// <summary>
+        /// 网络恢复
+        /// </summary>
+        private void NetRecoverForm_NetRecoverEvent()
+        {
+            isNetBroken = false;
+        }
+
+        /// <summary>
+        /// 网络故障
+        /// </summary>
+        private void NetRecoverForm_NetBrokenEvent()
+        {
+            isNetBroken = true;
+        }
+        #endregion
     }
 }

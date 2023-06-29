@@ -8,6 +8,7 @@
 
 using friUIMessageBox;
 using log4net;
+using ProgrammeFrame.AidedForm;
 using ProgrammeFrame.Common.db;
 using ProgrammeFrame.Entity;
 
@@ -20,5 +21,6 @@ namespace ProgrammeFrame.Common
         //public static readonly ILog logger = new Log(1).GetLogger("ProgrammeFrame", true,true, "ProgrammeFrame", "ProgrammeFrameErr", "D:\\Log\\ProgrammeFrame\\");
         public static EntityConfig config = EntityConfig.GetConfig();
         public static SQLOperation sqlOperation = new SQLOperation();
+        public static NetRecoveryForm netRecoverForm = new NetRecoveryForm("Station Name", "System Name");//网络故障界面
     }
 }
