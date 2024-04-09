@@ -16,7 +16,7 @@ namespace ProgrammeFrame.Entity
 {
     public class EntityConfig
     {
-        private static XmlDocument _XmlDocument = null;
+        private static XmlDocument xmlDocument = null;
         private string _ServerIP;
         private string _DBName;
         private string _LogPath;
@@ -28,38 +28,33 @@ namespace ProgrammeFrame.Entity
         public string LogPath { get => _LogPath; set => _LogPath = value; }
         #endregion
 
-        /// <summary>
-        /// 读取配置文件
-        /// </summary>
-        /// <param name="xmlPath">配置文件路径</param>
-        public static void ReadXMLFile(string xmlPath)
+        private EntityConfig(string xmlPath)
         {
             try
             {
-                XmlDocument xmlDocument = new XmlDocument();
+                xmlDocument = new XmlDocument();
                 xmlDocument.Load(xmlPath);
-                _XmlDocument = xmlDocument;
             }
             catch (Exception ex)
             {
-                //GlobalData.logger.Error(ex);//启动运行会报错有这句的话
+                GlobalData.logger.Error(ex);//启动运行会报错有这句的话
             }
         }
 
         /// <summary>
         /// 获取配置文件信息
         /// </summary>
-        /// <param name="xmlPath"></param>
+        /// <param name="xmlPath">配置文件路径</param>
         /// <returns>配置文件实体对象EntityConfig</returns>
-        public static EntityConfig GetConfig()
+        public static EntityConfig GetConfig(string xmlPath)
         {
-            EntityConfig config = new EntityConfig();
+            EntityConfig config = new EntityConfig(xmlPath);
             try
             {
-                if (_XmlDocument != null && _XmlDocument.HasChildNodes)
+                if (xmlDocument != null && xmlDocument.HasChildNodes)
                 {
                     Dictionary<string, string> dic = new Dictionary<string, string>();
-                    Utils.GetAllXMLNode(_XmlDocument.ChildNodes, ref dic);
+                    Utils.GetAllXMLNode(xmlDocument.ChildNodes, ref dic);
 
                     if (dic.Count != 0)
                     {
@@ -81,10 +76,16 @@ namespace ProgrammeFrame.Entity
                                     case "DateTime":
                                         property.SetValue(config, Convert.ToDateTime(dic[property.Name]), null);
                                         break;
+                                    case "Double":
+                                        property.SetValue(config, Convert.ToDouble(dic[property.Name]), null);
+                                        break;
+                                    default:
+                                        GlobalData.logger.Warn("暂不能处理" + property.PropertyType.Name + "类型");
+                                        break;
                                 }
                             }
                             else
-                                GlobalData.logger.Warn("配置文件没有" + property.Name + "节点");
+                                GlobalData.logger.Warn("配置文件没有" + property.Name + "节点或节点值为空");
                         }
                     }
                     else

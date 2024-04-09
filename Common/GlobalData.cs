@@ -11,6 +11,7 @@ using log4net;
 using ProgrammeFrame.AidedForm;
 using ProgrammeFrame.Common.db;
 using ProgrammeFrame.Entity;
+using System.Windows.Forms;
 
 namespace ProgrammeFrame.Common
 {
@@ -19,8 +20,8 @@ namespace ProgrammeFrame.Common
         public static CUIMessageBox messageBox = new CUIMessageBox();//提示框
         public static readonly ILog logger = LogManager.GetLogger("ProgrammeFrame");
         //public static readonly ILog logger = new Log(1).GetLogger("ProgrammeFrame", true,true, "ProgrammeFrame", "ProgrammeFrameErr", "D:\\Log\\ProgrammeFrame\\");
-        public static EntityConfig config = EntityConfig.GetConfig();
-        public static SQLOperation sqlOperation = new SQLOperation();
+        public static EntityConfig config = EntityConfig.GetConfig($"{Application.StartupPath}\\ProgrammeFrame.xml");
+        public static SQLOperation sqlOperation = new SQLOperation(0,config.ServerIP,config.DBName);
         public static NetRecoveryForm netRecoverForm = new NetRecoveryForm("Station Name", "System Name");//网络故障界面
     }
 }

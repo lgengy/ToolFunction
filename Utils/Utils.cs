@@ -8,6 +8,7 @@
 *
 ********************************************************************/
 
+using Microsoft.Win32;
 using ProgrammeFrame;
 using ProgrammeFrame.Common;
 using System;
@@ -880,6 +881,27 @@ public class Utils
             }
         }
         return uuid;
+    }
+
+    /// <summary>
+    /// 判断.Net Framework的Release是否符合需要
+    /// (本方法应用环境要求.Net Framework 版本在4.0及以上)
+    /// </summary>
+    /// <param name="release">需要的版本 version = 4.5 release = 379893</param>
+    /// <returns></returns>
+    /// <remarks>个版本release可在https://docs.microsoft.com/zh-cn/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed#net_b找到</remarks>
+    /// <see cref="https://blog.csdn.net/qq_43024228/article/details/119533955"/>
+    public static bool GetDotNetRelease(int release)
+    {
+        const string subkey = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\";
+        using (RegistryKey ndpKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(subkey))
+        {
+            if (ndpKey != null && ndpKey.GetValue("Release") != null)
+            {
+                return (int)ndpKey.GetValue("Release") >= release;
+            }
+            return false;
+        }
     }
 
     private void EmptyFunftion()
