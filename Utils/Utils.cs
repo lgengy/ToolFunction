@@ -9,7 +9,6 @@
 ********************************************************************/
 
 using Microsoft.Win32;
-using ProgrammeFrame;
 using ProgrammeFrame.Common;
 using System;
 using System.Collections;
@@ -37,31 +36,15 @@ public class Utils
     /// <param name="ds"></param>
     /// <param name="objectt">数据集标识名</param>
     /// <returns>true-有数据 false-没数据</returns>
-    public static bool CheckDBSetValidData(DataSet ds, string objectt = "")
+    public static bool CheckDBSetValidData(DataSet ds)
     {
         bool returnValue = false;
-        try
+        if (ds != null)
         {
-            if (ds != null)
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                {
-                    returnValue = true;
-                }
-                else
-                {
-                    GlobalData.logger.Info(objectt + " No datas");
-                }
+                returnValue = true;
             }
-            else
-            {
-                GlobalData.logger.Info(objectt + " 获取的数据集为null");
-            }
-        }
-        catch (Exception ex)
-        {
-            GlobalData.logger.Warn(objectt + " 异常：" + ex.Message);
-            GlobalData.logger.Error(ex);
         }
         return returnValue;
     }
@@ -73,8 +56,10 @@ public class Utils
     /// </summary>
     /// <param name="xmlNodeList">xml node集合</param>
     /// <param name="dic">保存节点信息的键值对(节点名，节点值)</param>
-    public static void GetAllXMLNode(XmlNodeList xmlNodeList, ref Dictionary<string, string> dic)
+    /// <param name="info">函数执行过程中的提示信息</param>
+    public static void GetAllXMLNode(XmlNodeList xmlNodeList, Dictionary<string, string> dic, out string info)
     {
+        info = "";
         try
         {
             foreach (XmlNode node in xmlNodeList)
@@ -84,17 +69,17 @@ public class Utils
                     if (!dic.ContainsKey(node.ParentNode.Name))
                         dic.Add(node.ParentNode.Name, node.InnerText);
                     else
-                        GlobalData.logger.Warn($"{node.ParentNode.Name}重复，值{node.InnerText}，已保存的值为{dic[node.ParentNode.Name]}");
+                        info += $"{node.ParentNode.Name}重复，值{node.InnerText}，已保存的值为{dic[node.ParentNode.Name]}\n";
                 }
                 else
                 {
-                    GetAllXMLNode(node.ChildNodes, ref dic);
+                    GetAllXMLNode(node.ChildNodes, dic, out info);
                 }
             }
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error(ex);
+            throw ex;
         }
     }
 
@@ -117,7 +102,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error(ex);
+            throw ex;
         }
         finally
         {
@@ -178,7 +163,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error(ex);
+            throw ex;
         }
     }
 
@@ -190,7 +175,6 @@ public class Utils
     /// <returns>文件list</returns>
     public static List<string> GetFileFromPath(string path, Comparison<string> comparison = null)
     {
-        GlobalData.logger.Info("Inn param: " + path);
         List<string> re = new List<string>();
         try
         {
@@ -206,17 +190,11 @@ public class Utils
                 }
                 if(comparison != null) re.Sort(comparison);
             }
-            else
-            {
-                GlobalData.logger.Info("No path");
-            }
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error(ex);
+            throw ex;
         }
-        GlobalData.logger.Info("Out result: " + re.Count);
         return re;
     }
 
@@ -229,7 +207,6 @@ public class Utils
     /// <remarks>C:\a\b\c\d\e.txt，0返回C:\a\b\c\d\，1返回C:\，以此类推</remarks>
     public static string GetDirectoryFromPath(string path, int level = 0)
     {
-        GlobalData.logger.Info($"Inn params: {path}, {level}");
         string returnDir = "";
         try
         {
@@ -247,10 +224,8 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error(ex);
+            throw ex;
         }
-        GlobalData.logger.Info("Out return value: " + returnDir);
         return returnDir;
     }
 
@@ -287,11 +262,11 @@ public class Utils
     /// 删除路径下的所有文件
     /// </summary>
     /// <param name="path">多个路径以逗号“,”进行区分</param>
-    public static void DeleteAllFilesFromPath(string paths)
+    /// <param name="info">函数执行过程中的提示信息</param>
+    public static void DeleteAllFilesFromPath(string paths, out string info)
     {
-        GlobalData.logger.Info("Inn param: " + paths);
-
         string[] pathArray = paths.Split(',');
+        info = "";
 
         foreach (string path in pathArray)
         {
@@ -300,17 +275,14 @@ public class Utils
                 if (Directory.Exists(path))//目录存在
                 {
                     Directory.Delete(path, true);
-                    GlobalData.logger.Info("路径: " + path + "已删除");
+                    info += "路径: " + path + "已删除\n";
                 }
             }
             catch (Exception ex)
             {
-                GlobalData.logger.Warn(ex.Message);
-                GlobalData.logger.Error(ex);
+                throw ex;
             }
         }
-
-        GlobalData.logger.Info("Out ");
     }
 
     /// <summary>
@@ -318,29 +290,33 @@ public class Utils
     /// </summary>
     /// <param name="logDir">位置</param>
     /// <param name="expiredDays">日期</param>
-    public static void DeletingExpiredLogs(string logDir, int expiredDays)
+    /// <param name="info">函数执行过程中的提示信息</param>
+    public static void DeletingExpiredLogs(string logDir, int expiredDays, out string info)
     {
-        GlobalData.logger.Info("Inn ");
+        info = "";
         try
         {
-            List<string> listLogFile = Utils.GetFileFromPath(logDir);
-            if (listLogFile.Count > 0)
-                foreach (string logPath in listLogFile)
-                {
-                    FileInfo file = new FileInfo(logPath);
-                    if ((DateTime.Now - file.LastWriteTime).TotalDays > expiredDays && file.Exists)
+            if (!string.IsNullOrWhiteSpace(logDir))
+            {
+                List<string> listLogFile = GetFileFromPath(logDir);
+                if (listLogFile.Count > 0)
+                    foreach (string logPath in listLogFile)
                     {
-                        file.Delete();
-                        GlobalData.logger.Info("Deleting log: " + file.FullName);
+                        FileInfo file = new FileInfo(logPath);
+                        if ((DateTime.Now - file.LastWriteTime).TotalDays > expiredDays && file.Exists)
+                        {
+                            file.Delete();
+                            info += "Deleting log: " + file.FullName + "\n";
+                        }
                     }
-                }
+            }
+            else
+                info += "请输入有效日志目录";
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error(ex);
+            throw ex;
         }
-        GlobalData.logger.Info("Out ");
     }
 
     /// <summary>
@@ -389,7 +365,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Error(ex);
+            throw ex;
         }
     }
     #endregion
@@ -447,11 +423,9 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error(ex);
+            throw ex;
         }
 
-        GlobalData.logger.Info("DisplayPicture: " + type + "," + imgPath + "," + (result ? "success" : "fail"));
         return result;
     }
 
@@ -566,30 +540,34 @@ public class Utils
     #endregion
 
     #region 合规性判断
-
+    /// <summary>
+    /// 正整数判断
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
     public static bool IsDigital(string text)
     {
-        if (!string.IsNullOrEmpty(text) && !Regex.IsMatch(text, @"^[1-9]\d*$"))
-        {
-            GlobalData.messageBox.ShowDialog("请输入正整数！", friUIMessageBox.CUIMessageBox.MessageBoxButton.OKOnly, friUIMessageBox.CUIMessageBox.MessageBoxIcon.Warning, "警告");
-            return false;
-        }
-        return true;
+        return !string.IsNullOrEmpty(text) && Regex.IsMatch(text, @"^[1-9]\d*$");
     }
 
+    /// <summary>
+    /// 精确到两位的浮点数判断
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
     public static bool IsFloat(string text)
     {
-        if (!string.IsNullOrEmpty(text) && !Regex.IsMatch(text, @"^\d+\.\d{1,2}$"))
-        {
-            GlobalData.messageBox.ShowDialog("请精确到小数点后两位！", friUIMessageBox.CUIMessageBox.MessageBoxButton.OKOnly, friUIMessageBox.CUIMessageBox.MessageBoxIcon.Warning, "警告");
-            return false;
-        }
-        return true;
+        return !string.IsNullOrEmpty(text) && Regex.IsMatch(text, @"^\d+\.\d{1,2}$");
     }
 
+    /// <summary>
+    /// 空值判断
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
     public static bool IsNullOrDBNull(object obj)
     {
-        return ((obj is DBNull) || string.IsNullOrEmpty(obj.ToString())) ? true : false;
+        return (obj is DBNull) || obj is null || string.IsNullOrEmpty(obj.ToString());
     }
     #endregion
 
@@ -623,17 +601,14 @@ public class Utils
                 }
                 else
                 {
-                    GlobalData.logger.Info(">>>>>>>>ping" + ip + "失败，ping了" + pingCount + "次<<<<<<<<");
                     if (!GlobalData.netRecoverForm.isShowed) GlobalData.netRecoverForm.ShowNetRecoverForm();
                 }
             }
             catch (Exception ex)
             {
-                GlobalData.logger.Error(ex);
+                throw ex;
             }
         }
-        else
-            GlobalData.logger.Warn("要ping的IP为空");
 
         return re;
     }
@@ -660,8 +635,7 @@ public class Utils
         }
         catch (Exception ex)
         {
-            GlobalData.logger.Warn(ex.Message);
-            GlobalData.logger.Error(ex);
+            throw ex;
         }
     }
 
@@ -680,39 +654,6 @@ public class Utils
             }
         }
         return ip;
-    }
-
-    /// <summary>
-    /// 重复获取指定次数的与指定网段相匹配的第一个IP直到成功
-    /// </summary>
-    /// <param name="localSubNetwork">网段</param>
-    /// <param name="count">次数，默认10次</param>
-    public static string GetLocalIPMatchedSubNetwork(string localSubNetwork, int count = 10)
-    {
-        string localIP = "";
-
-        for (int i = 0; i < count; i++)
-        {
-            if (string.IsNullOrEmpty(localIP) && i == count - 1)
-            {
-                GlobalData.logger.Warn("本地IP获取失败");
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(localIP))
-                {
-                    GlobalData.logger.Info("本地IP：" + localIP);
-                    break;
-                }
-                else
-                {
-                    System.Threading.Thread.Sleep(2000);
-                    localIP = GetLocalIPMatchedSubNetwork(localSubNetwork);
-                }
-            }
-        }
-
-        return localIP;
     }
     #endregion
 

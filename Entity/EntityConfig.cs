@@ -54,7 +54,8 @@ namespace ProgrammeFrame.Entity
                 if (xmlDocument != null && xmlDocument.HasChildNodes)
                 {
                     Dictionary<string, string> dic = new Dictionary<string, string>();
-                    Utils.GetAllXMLNode(xmlDocument.ChildNodes, ref dic);
+                    Utils.GetAllXMLNode(xmlDocument.ChildNodes, dic, out string info);
+                    if (!string.IsNullOrEmpty(info)) GlobalData.logger.Warn(info);
 
                     if (dic.Count != 0)
                     {

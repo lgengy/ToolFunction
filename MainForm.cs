@@ -41,7 +41,10 @@ namespace ProgrammeFrame
             GlobalData.logger.Info("版本号：1.0.0.1".PadLeft(51, '=').PadRight(96, '='));
             GlobalData.logger.Info("".PadLeft(50, '=').PadRight(100, '='));
 
-            Task.Factory.StartNew(() => { Utils.DeletingExpiredLogs(@"D:\Log\ProgrammeFrame\", 90); }).ContinueWith(task => timerLogDelete.Start());//创建任务删除过期日志，并在任务结束之后启动timerLogDelete
+            Task.Factory.StartNew(() => { 
+                Utils.DeletingExpiredLogs(@"D:\Log\ProgrammeFrame\", 90, out string info);
+                if (!string.IsNullOrEmpty(info)) GlobalData.logger.Info(info);
+            }).ContinueWith(task => timerLogDelete.Start());//创建任务删除过期日志，并在任务结束之后启动timerLogDelete
         }
 
         #region 系统事件
@@ -51,7 +54,10 @@ namespace ProgrammeFrame
             if(DateTime.Now.Hour > 1 && DateTime.Now.Hour < 4)
             {
                 GlobalData.logger.Info("检查过期日志");
-                Task.Factory.StartNew(() => { Utils.DeletingExpiredLogs(@"D:\Log\ProgrammeFrame\", 90); });
+                Task.Factory.StartNew(() => {
+                    Utils.DeletingExpiredLogs(@"D:\Log\ProgrammeFrame\", 90, out string info);
+                    if (!string.IsNullOrEmpty(info)) GlobalData.logger.Info(info);
+                });
             }
         }
 
