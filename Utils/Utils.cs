@@ -171,9 +171,10 @@ public class Utils
     /// 获取路径下的所有文件
     /// </summary>
     /// <param name="path">路径</param>
+    /// <param name="delEmptyPath">删除空目录</param>
     /// <param name="comparison">对文件进行排序的委托</param>
     /// <returns>文件list</returns>
-    public static List<string> GetFileFromPath(string path, Comparison<string> comparison = null)
+    public static List<string> GetFileFromPath(string path, bool delEmptyPath = false, Comparison<string> comparison = null)
     {
         List<string> re = new List<string>();
         try
@@ -181,14 +182,15 @@ public class Utils
             if (!string.IsNullOrWhiteSpace(path) && Directory.Exists(path))
             {
                 re.AddRange(Directory.GetFiles(path));
-                if(Directory.GetDirectories(path).Length > 0)
+                if (Directory.GetDirectories(path).Length > 0)
                 {
-                    foreach(string dir in Directory.GetDirectories(path))
+                    foreach (string dir in Directory.GetDirectories(path))
                     {
-                        re.AddRange(GetFileFromPath(dir, comparison));
+                        re.AddRange(GetFileFromPath(dir, delEmptyPath, comparison));
                     }
                 }
-                if(comparison != null) re.Sort(comparison);
+                if (comparison != null && re.Count > 0) re.Sort(comparison);
+                if (delEmptyPath && re.Count == 0) Directory.Delete(path);
             }
         }
         catch (Exception ex)
